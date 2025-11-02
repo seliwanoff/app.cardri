@@ -11,7 +11,7 @@ import marquee1 from "@/public/assets/marquee2.png";
 import { ArchiveMinus } from "iconsax-react";
 
 interface ReceiptPageProps {
-  searchParams?: Record<string, string>;
+  searchParams?: any;
 }
 
 export default function ReceiptPage({ searchParams }: ReceiptPageProps) {
