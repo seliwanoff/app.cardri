@@ -7,13 +7,7 @@ import { useRouter } from "next/navigation";
 const SendMoneyWidget = () => {
   const router = useRouter();
   return (
-    <div
-      className="flex flex-col gap-6 h-96  overflow-y-auto mt-4"
-      style={{
-        scrollbarWidth: "none",
-        msOverflowStyle: "none",
-      }}
-    >
+    <div className="flex flex-col gap-6 lg:h-[500px] h-full  overflow-y-auto mt-4">
       {sendMoneyList?.map((item, index) => (
         <div
           key={index}

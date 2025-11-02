@@ -1,0 +1,131 @@
+import {
+  Dialog,
+  DialogPanel,
+  DialogTitle,
+  Transition,
+  TransitionChild,
+} from "@headlessui/react";
+import React, { useState } from "react";
+
+import {
+  useBillModalOverlay,
+  useBillPaymentOverlay,
+  useNetworkOverlay,
+  usePaymentTypeChina,
+} from "@/stores/overlay";
+import DeviceBindingWidget from "../widget/device-binding-widget";
+import {
+  CheckCircle2Icon,
+  ChevronRight,
+  CircleIcon,
+  XIcon,
+} from "lucide-react";
+import SendMoneyWidget from "../widget/send-money-widget";
+import { BankAutocomplete } from "../widget/bankAutoComplete";
+import { yupResolver } from "@hookform/resolvers/yup";
+import { useForm } from "react-hook-form";
+import * as yup from "yup";
+import { CountryAutoComplete } from "../widget/CountryAutoComplete";
+import Image from "next/image";
+
+const schema = yup.object().shape({
+  // currency: yup.string().required(),
+  bankName: yup.string().required(),
+  accountName: yup.string().required(),
+  accountNumber: yup
+    .string()
+    .required()
+    .min(10, "Account number must be exactly 10 digits")
+    .max(10, "Account number must be exactly 10 digits"),
+});
+interface PaymentModalProps {
+  paymentList: any;
+}
+const IntraNetworkMoal = ({ paymentList }: PaymentModalProps) => {
+  const { openNetwork, setOpenNetwork, setNetworkDetails } =
+    useNetworkOverlay();
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
+  const [selectedId, setSelectedId] = useState();
+  const {
+    control,
+    register,
+    handleSubmit,
+    formState: { errors },
+    reset,
+    watch,
+    setValue,
+  } = useForm({
+    resolver: yupResolver(schema),
+  });
+  return (
+    <Transition show={openNetwork}>
+      <Dialog className="relative z-10" onClose={setOpenNetwork}>
+        <TransitionChild
+          enter="ease-out duration-300"
+          enterFrom="opacity-0"
+          enterTo="opacity-100"
+          leave="ease-in duration-200"
+          leaveFrom="opacity-100"
+          leaveTo="opacity-0"
+        >
+          <div className="fixed inset-0 bg-gray-500 opacity-70 backdrop-blur-sm transition-opacity" />
+        </TransitionChild>
+
+        <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
+          <div className="flex min-h-full items-end justify-center overflow-hidden lg:p-4 text-center sm:items-center sm:p-0">
+            <TransitionChild
+              enter="ease-out duration-300"
+              enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+              enterTo="opacity-100 translate-y-0 sm:scale-100"
+              leave="ease-in duration-200"
+              leaveFrom="opacity-100 translate-y-0 sm:scale-100"
+              leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
+            >
+              <DialogPanel className="relative lg:max-h-auto max-h-[600px] transform w-full lg:rounded-[30px] bg-[#F5F2FB] px-4 pb-4 pt-5 text-left lg:pl-[30px] lg:pb-[30px] lg:pr-[30px] shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[526px] sm:p-6">
+                <div className="flex w-ful items-center  justify-between gap-4">
+                  <DialogTitle className="text-[20px] font-sora font-bold text-[#07052A]">
+                    Select Network
+                  </DialogTitle>
+                  <div
+                    className="h-10.5 w-10.5 flex items-center justify-center rounded-[12px] border border-[#6C757D] cursor-pointer"
+                    onClick={() => setOpenNetwork(false)}
+                  >
+                    <XIcon color="#6C757D" />
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-4 mt-8 overflow-y-auto h-[450px]">
+                  {paymentList?.map((item: any, index: any) => (
+                    <div
+                      className="flex items-center justify-between py-5 px-4 bg-white rounded-[10px] cursor-pointer"
+                      key={item.id}
+                      onClick={() => {
+                        setSelectedId(index);
+                        setNetworkDetails(item);
+                        setOpenNetwork(false);
+                      }}
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="flex flex-col gap-1">
+                          <span className="text-[#202020] font-normal font-inter text-base">
+                            {item.name}
+                          </span>
+
+                          <span className="text-xs text-red-600 "></span>
+                        </div>
+                      </div>
+                      <ChevronRight />
+                    </div>
+                  ))}
+                </div>
+              </DialogPanel>
+            </TransitionChild>
+          </div>
+        </div>
+      </Dialog>
+    </Transition>
+  );
+};
+
+export default IntraNetworkMoal;

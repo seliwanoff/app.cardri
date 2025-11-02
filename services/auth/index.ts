@@ -20,6 +20,7 @@ export const userSignIn = async (id: string, password: string, uid: string) => {
             id,
             password,
             uid,
+            token: uid,
           },
           {
             headers: {

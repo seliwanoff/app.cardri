@@ -434,25 +434,6 @@ const WireFormbeneficiary = () => {
 
   return (
     <div className="w-full mt-4">
-      <div className="flex w-full justify-between items-center ">
-        <div
-          className="h-10.5 w-10.5 flex items-center justify-center rounded-[12px] border border-[#6C757D] cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft color="#6C757D" />
-        </div>
-
-        <div className="flex items-center gap-2 cursor-pointer">
-          <ArchiveMinus
-            className="text-primary-100"
-            color="#D70D4A"
-            size={20}
-          />
-          <span className="text-secondary-500 font-normal text-base font-inter ">
-            Transactions
-          </span>
-        </div>
-      </div>
       <div
         className="h-[calc(100vh-125px)] w-full flex flex-col-reverse overflow-auto "
         style={{

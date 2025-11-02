@@ -19,6 +19,11 @@ import dom from "@/public/assets/cardripay/sendmoney/dom.png";
 import otc from "@/public/assets/cardripay/sendmoney/otc.png";
 import wire from "@/public/assets/cardripay/sendmoney/wire.png";
 
+import airtime from "@/public/assets/bill/solar_iphone-bold.png";
+import data from "@/public/assets/bill/data.png";
+import cable from "@/public/assets/bill/cable.png";
+import tv from "@/public/assets/bill/tv.png";
+
 export const CountryLisT = [
   {
     label: "Nigeria",
@@ -149,5 +154,39 @@ export const sendMoneyList = [
     description: "Send money manually to bank account using the bank details.",
     image: otc,
     link: "",
+  },
+  {
+    label: "Intra Africa Tranfer",
+    description: "Send money manually to bank account using the bank details.",
+    image: otc,
+    link: "../cardri-pay/transfer?step=1&type=intra-africa",
+  },
+];
+
+export const billPaymentList = [
+  {
+    label: "Airtime",
+    description: "Top up airtime on your most preferred network.",
+    image: airtime,
+    link: "../cardri-pay/bill?step=1&type=airtime",
+  },
+  {
+    label: "Mobile Data",
+    description: "Buy data plans seamlessly across all networks.",
+    image: data,
+    link: "../cardri-pay/bill?step=1&type=data",
+  },
+
+  {
+    label: "Cable Tv",
+    description: "Subscribe or Renew your most preferred viewing platform. ",
+    image: tv,
+    link: "../cardri-pay/bill?step=1&type=cable",
+  },
+  {
+    label: "Electricity",
+    description: "Purchase electricity tokens seamlessly.",
+    image: cable,
+    link: "../cardri-pay/bill?step=1&type=electricity",
   },
 ];

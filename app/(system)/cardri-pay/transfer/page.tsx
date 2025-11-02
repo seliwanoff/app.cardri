@@ -5,6 +5,7 @@ import TransferPage from "@/components/transfer/local_type";
 import WireTransferpage from "@/components/transfer/wire_type";
 import DomTransferPage from "@/components/transfer/dom_type";
 import ChinaTransferPage from "@/components/transfer/china_type";
+import IntraAfricaPage from "@/components/transfer/intra-africa";
 
 const TransferPageByType = () => {
   const searchParams = useSearchParams();
@@ -25,6 +26,8 @@ const TransferPageByType = () => {
         return <DomTransferPage />;
       case "china-pay":
         return <ChinaTransferPage />;
+      case "intra-africa":
+        return <IntraAfricaPage />;
       case null:
         return <div>Loading...</div>;
       default:

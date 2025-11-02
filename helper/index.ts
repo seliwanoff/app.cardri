@@ -53,3 +53,75 @@ export const getStatusText = (status: Status | string) => {
   const rest = status?.slice(1).toLowerCase();
   return `${firstChar}${rest}`;
 };
+
+export const getTextStatus = (status: string) => {
+  switch (status?.toLowerCase()) {
+    case "7":
+      return "Pending";
+    case "1":
+      return "Completed";
+    case "archived":
+      return "bg-red-500/5 border-red-500 text-red-500";
+    case "draft":
+      return "bg-gray-500/5 border-gray-500 text-gray-500";
+    case "0":
+      return "Failed";
+  }
+};
+
+// types.ts (create this if you don't have it)
+export interface Transaction {
+  id: string;
+  type: "credit" | "debit" | "transfer" | string; // More specific if possible
+  amount: number;
+  date: string;
+  network: string;
+  reciever: string;
+  // Add other fields as needed
+}
+
+export interface MonthlyTransactionGroup {
+  month: string;
+  total: number;
+  transactions: Transaction[];
+}
+
+// transactionHelpers.ts
+export const filterTransactionsByType = (
+  transactionGroups: MonthlyTransactionGroup[],
+  type: Transaction["type"],
+  network?: string // Make network optional
+): MonthlyTransactionGroup[] => {
+  return transactionGroups
+    .map((group) => {
+      const filteredTransactions = group.transactions.filter((tx) => {
+        const typeMatches = tx.type === type;
+        // If network is provided, check network match too
+        const networkMatches = network ? tx.network === network : true;
+        return typeMatches && networkMatches;
+      });
+
+      return {
+        ...group,
+        transactions: filteredTransactions,
+        total: filteredTransactions.length,
+      };
+    })
+    .filter((group) => group.total > 0);
+};
+
+export const getFormattedTransactions = (
+  transactionGroups: MonthlyTransactionGroup[] | undefined
+): Transaction[] => {
+  if (!transactionGroups) return [];
+
+  // Flatten all transactions across months
+  return transactionGroups.flatMap((group) =>
+    group.transactions.map((tx) => ({
+      ...tx,
+      // Add any formatting here
+      date: new Date(tx.date).toLocaleDateString(),
+      amount: parseFloat(tx.amount.toFixed(2)),
+    }))
+  );
+};

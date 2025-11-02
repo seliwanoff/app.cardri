@@ -44,7 +44,12 @@ const LoaderModal = () => {
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
               <DialogPanel>
-                <Loader2Icon className="animate-spin text-white " size={100} />
+                <div className="w-full h-full justify-center items-center">
+                  <Loader2Icon
+                    className="animate-spin text-white "
+                    size={100}
+                  />
+                </div>
               </DialogPanel>
             </TransitionChild>
           </div>

@@ -1,13 +1,10 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Check, ChevronRight, Info, InfoIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
-import CountryConfirmingDialog from "@/components/modal/country-confirming-modal";
 import { useEffect, useState } from "react";
-import { addUrlParam } from "@/lib/urlParams";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAuthStep } from "@/stores/misc";
 import Intro from "@/components/auth/Into";
 import SignupForm from "@/components/auth/signForm";
@@ -18,13 +15,6 @@ import { UserData } from "@/types";
 import TransactionPin from "@/components/auth/transaction_pin";
 import VerifyTransactionPin from "@/components/auth/verify_transaction_pin";
 
-const IsNotAvailable = () => {
-  return (
-    <div className="flex items-center justify-center bg-[#FAF7FF] text-primary-100 py-1.5 px-2 font-normal  text-[8px]  rounded-full">
-      Coming Soon
-    </div>
-  );
-};
 const SignUp = () => {
   const { step, setStep } = useAuthStep();
 

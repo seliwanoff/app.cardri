@@ -3,6 +3,7 @@ export interface UserData {
   phone?: string;
   password?: string;
   firstName?: string;
+  phoneNumber?: string;
   lastName?: string;
   bvn?: string;
   nin?: string;
@@ -37,4 +38,5 @@ export interface createWirePaymentType {
   amount: string;
   currencyfrom: "NGN";
   m: "web";
+  balanceType: string;
 }

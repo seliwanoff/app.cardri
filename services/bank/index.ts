@@ -14,11 +14,11 @@ export const resolveAccountInfo = async (
     queryFn: async () => {
       try {
         const instance = axios.create({
-          baseURL: "https://api.cardri.ng/api",
+          baseURL: "https://api.cardri.ng/api/v1",
         });
 
-        const response = await instance.post("/verify9bssbank", {
-          bank,
+        const response = await instance.post("/resolve_account", {
+          accountNumber: bank,
           bankCode,
         });
         return response.data;
@@ -39,10 +39,10 @@ export const getBanks = async (): Promise<
     queryFn: async () => {
       try {
         const instance = axios.create({
-          baseURL: "https://api.cardri.ng/api", // Without /v1
+          baseURL: "https://api.cardri.ng/api/v1", // Without /v1
         });
 
-        const response = await instance.get("/getbanks9bsb");
+        const response = await instance.get("/get-bank-list");
         return response.data?.data.bankList;
 
         // OR if fetchData is a custom wrapper:
@@ -137,6 +137,86 @@ export const createWirepayment = async (
       throw error;
     }
     throw new Error("Unknown error occurred while creating beneficiary");
+  }
+};
+
+export const tranferToBank = async (
+  payload: any
+): Promise<AxiosResponse<any>> => {
+  try {
+    const response = await postData("general/transfer", payload);
+    //@ts-ignore
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Unknown error occurred while creating beneficiary");
+  }
+};
+export const createChinaPayment = async (
+  payload: any
+): Promise<AxiosResponse<any>> => {
+  try {
+    const response = await postData("china-pay", payload, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+    //@ts-ignore
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Unknown error occurred while creating china pay");
+  }
+};
+
+export const createAirtimePayment = async (
+  payload: any
+): Promise<AxiosResponse<any>> => {
+  try {
+    const response = await postData("airtime", payload);
+    //@ts-ignore
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Unknown error occurred while creating airtime payment");
+  }
+};
+
+export const createDataPayment = async (
+  payload: any
+): Promise<AxiosResponse<any>> => {
+  try {
+    const response = await postData("data", payload);
+    //@ts-ignore
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error("Unknown error occurred while creating data payment");
+  }
+};
+
+export const createElectricityPayment = async (
+  payload: any
+): Promise<AxiosResponse<any>> => {
+  try {
+    const response = await postData("electricity", payload);
+    //@ts-ignore
+    return response;
+  } catch (error) {
+    if (error instanceof Error) {
+      throw error;
+    }
+    throw new Error(
+      "Unknown error occurred while creating electricity payment"
+    );
   }
 };
 

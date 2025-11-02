@@ -1,4 +1,6 @@
 // hooks/useManagementData.ts
+
+"use client";
 import { getManagementData } from "@/services/lib";
 import { useManageStore } from "@/stores/managementStore";
 import { useEffect } from "react";

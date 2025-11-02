@@ -1,13 +1,13 @@
 "use client";
 
 import Image from "next/image";
-import { ArrowRight, Check, ChevronRight, Info, InfoIcon } from "lucide-react";
+import { Check, ChevronRight, Info, InfoIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import CountryConfirmingDialog from "@/components/modal/country-confirming-modal";
 import { useState } from "react";
 import { addUrlParam } from "@/lib/urlParams";
-import { useParams, useSearchParams } from "next/navigation";
+import { useSearchParams } from "next/navigation";
 import { useAuthStep } from "@/stores/misc";
 import { CountryLisT } from "@/lib/assets";
 

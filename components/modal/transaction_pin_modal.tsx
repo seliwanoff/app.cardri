@@ -33,7 +33,7 @@ const TransactionPinModal = () => {
         </TransitionChild>
 
         <div className="fixed inset-0 z-10 w-screen overflow-y-auto">
-          <div className="flex min-h-full items-end justify-center overflow-hidden p-4 text-center sm:items-center sm:p-0">
+          <div className="flex min-h-full items-end justify-center overflow-hidden lg:p-4 text-center sm:items-center sm:p-0">
             <TransitionChild
               enter="ease-out duration-300"
               enterFrom="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
@@ -42,9 +42,9 @@ const TransactionPinModal = () => {
               leaveFrom="opacity-100 translate-y-0 sm:scale-100"
               leaveTo="opacity-0 translate-y-4 sm:translate-y-0 sm:scale-95"
             >
-              <DialogPanel className="relative transform rounded-[42px] bg-[#F5F2FB] lg:px-[42px]  pt-5 text-left lg:pb-[64px] shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[526px] sm:p-6">
+              <DialogPanel className="relative w-full lg:min-h-auto min-h-[calc(100vh-140px)] transform lg:rounded-[42px] bg-[#F5F2FB] lg:px-[42px]  pt-5 text-left lg:pb-[64px] shadow-xl transition-all sm:my-8 sm:w-full sm:max-w-[526px] sm:p-6">
                 <div className="w-full justify-between items-center ">
-                  <div className="flex w-full justify-between items-center mb-12">
+                  <div className="flex w-full justify-between items-center mb-12 px-4">
                     <div
                       className="flex items-center justify-center rounded-[12px]font-sora font-bold text-xl "
                       // onClick={() => router.back()}

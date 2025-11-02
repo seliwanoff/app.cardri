@@ -134,7 +134,7 @@ const SigninForm = () => {
             )}
           </Label>
           <Label htmlFor="password">
-            <span className="inline-block text-base font-extralight text-[#4F4F4F]">
+            <span className="inline-block text-base font-normal text-label-100">
               Password
             </span>
             <div className="relative">

@@ -19,6 +19,7 @@ interface BankOption {
   label: string;
   iso: string;
   country: string;
+  image: string;
 }
 
 interface CountryAutoCompleteProps {
@@ -28,6 +29,7 @@ interface CountryAutoCompleteProps {
   bankList: BankOption[];
   error?: boolean;
   required?: boolean;
+  image?: string;
 }
 
 export function CountryAutoComplete({
@@ -73,7 +75,7 @@ export function CountryAutoComplete({
                   key={bank.value}
                   className={cn(
                     "flex gap-6 cursor-pointer text-[14px] bg-white py-[20px] px-[16px] rounded-[12px] items-center   text-[#202020] font-inter font-normal",
-                    field.value === bank.iso && "bg-blue-100"
+                    field.value === bank.iso || (bank.country && "bg-blue-100")
                   )}
                   onClick={() => {
                     setCountryDetails(bank);
@@ -84,7 +86,7 @@ export function CountryAutoComplete({
                 >
                   {/** @ts-ignore */}
                   <Image
-                    src={bankLogo}
+                    src={bank.image || bankLogo}
                     //@ts-ignore
                     alt={bank.country}
                     className="h-6 w-6"

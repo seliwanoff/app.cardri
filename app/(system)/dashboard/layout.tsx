@@ -22,6 +22,7 @@ import { useRemoteUserStore } from "@/stores/remoteUser";
 import { useUserStore } from "@/stores/currentUserStore";
 import { useRouter } from "next/navigation";
 import { Providers } from "@/app/provider";
+import DashSideBarMobile from "@/components/lib/navigation/mobile_sidebar";
 
 export default function SystemLayout({
   children,
@@ -107,6 +108,8 @@ export default function SystemLayout({
       <div className="grid h-screen min-h-[200px] w-full grid-cols-7 overflow-hidden bg-[#F8F8F8]">
         <>
           <DashSideBarDesktop navMenuList={NavData} />
+          <DashSideBarMobile navMenuList={NavData} />
+
           <main className="relative col-span-7 flex h-screen flex-col overflow-hidden  xl:col-span-6 xl:bg-[#F8F8F8]">
             <DashTopNav />
             <div className="h-[calc(100% - 72px)] w-full overflow-x-hidden px-5 md:px-8 lg:px-16">
@@ -127,7 +130,7 @@ const NavData: { icon: any; title: string; link: string }[] = [
   {
     icon: ArchiveMinus,
     title: "Transactions",
-    link: "/dashboard/bookmarks",
+    link: "/dashboard/transactions",
   },
   { icon: Settings, title: "Settings", link: "/dashboard/settings" },
 ];

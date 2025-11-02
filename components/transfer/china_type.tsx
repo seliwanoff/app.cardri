@@ -55,6 +55,13 @@ import TransactionPinModal from "@/components/modal/transaction_pin_modal";
 import { Tabs, TabsList, TabsTrigger } from "../ui/tabs";
 import WireFormbeneficiary from "./beneficiary-wire-form";
 import WireAmountFrom from "./wire_amount_form";
+import ChinaFormOne from "../dashboard/transfer/china_form_1";
+import ChinaAmountForm from "./china-amount-form";
+import PaymentMethodModal from "../modal/payment_method";
+import COM from "@/public/assets/currencies/cashback.png";
+import NGN from "@/public/assets/currencies/NGNCurrency.png";
+import { useUserStore } from "@/stores/currentUserStore";
+import TransactionLastStage from "../navigation/TransactionLastStage";
 
 interface StatusPillProps {
   status: Status;
@@ -134,6 +141,8 @@ const ChinaTransferPage = () => {
   const [activeTab, setActiveTab] = useState("recents");
 
   const [isLoadings, setIsLoading] = useState(false);
+
+  const currentUser = useUserStore((state) => state.user);
 
   const StatusPill: React.FC<StatusPillProps> = ({ status }) => {
     return (
@@ -294,25 +303,6 @@ const ChinaTransferPage = () => {
     <>
       {step === 1 && (
         <div className="w-full mt-4">
-          <div className="flex w-full justify-between items-center ">
-            <div
-              className="h-10.5 w-10.5 flex items-center justify-center rounded-[12px] border border-[#6C757D] cursor-pointer"
-              onClick={() => router.back()}
-            >
-              <ArrowLeft color="#6C757D" />
-            </div>
-
-            <div className="flex items-center gap-2 cursor-pointer">
-              <ArchiveMinus
-                className="text-primary-100"
-                color="#D70D4A"
-                size={20}
-              />
-              <span className="text-secondary-500 font-normal text-base font-inter ">
-                Transactions
-              </span>
-            </div>
-          </div>
           <div
             className="h-[calc(100vh-125px)] w-full flex flex-col-reverse overflow-auto "
             style={{
@@ -530,8 +520,9 @@ const ChinaTransferPage = () => {
         </div>
       )}
 
-      {step === 2 && <WireFormbeneficiary />}
-      {step === 3 && <WireAmountFrom />}
+      {step === 2 && <ChinaFormOne />}
+      {step === 3 && <ChinaAmountForm />}
+      {step === 4 && <TransactionLastStage />}
     </>
   );
 };

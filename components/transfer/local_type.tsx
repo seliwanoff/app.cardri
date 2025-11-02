@@ -1,139 +1,127 @@
 "use client";
+
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { ArchiveMinus, CloseCircle } from "iconsax-react";
-import {
-  ArrowLeft,
-  CheckCheckIcon,
-  CheckCircle2,
-  ChevronDown,
-  ChevronLeft,
-  InfoIcon,
-  X,
-} from "lucide-react";
+import { CloseCircle } from "iconsax-react";
+import { CheckCircle2, ChevronDown, X } from "lucide-react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useForm, SubmitHandler, Controller } from "react-hook-form";
 import Switch from "react-switch";
 import bankLogo from "@/public/assets/cardripay/bank.png";
-
-import { cn } from "@/lib/utils";
 import { useEffect, useState } from "react";
 import { Button } from "@/components/ui/button";
 import { FaSpinner } from "react-icons/fa";
-import { useBankModal, useTransactionPinOverlay } from "@/stores/overlay";
-import { getBanks, resolveAccountInfo } from "@/services/bank";
+import {
+  useBankModal,
+  useLoadingSpinOverlay,
+  usePaymentMethodOverlay,
+  useTransactionPinOverlay,
+} from "@/stores/overlay";
+import {
+  createWirepayment,
+  getBanks,
+  resolveAccountInfo,
+  tranferToBank,
+} from "@/services/bank";
 import BankModal from "@/components/modal/bankModal";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { toast } from "sonner";
-import { updateUrlParams } from "@/lib/urlParams";
-
+import { addUrlParam, updateUrlParams } from "@/lib/urlParams";
 import {
   Drawer,
   DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
   DrawerHeader,
   DrawerTitle,
-  DrawerTrigger,
 } from "@/components/ui/drawer";
 import { currencySymbols } from "@/lib/misc";
 import { numberWithCommas } from "@/helper";
 import { useManagementData } from "@/hooks/useManagementData";
 import TransactionPinModal from "@/components/modal/transaction_pin_modal";
+import PaymentMethodSelector from "../paymentMethodSelector";
+import { verifyTransactionPin } from "@/services/_request";
+import TransactionLastStage from "../navigation/TransactionLastStage";
+import LoaderModal from "../modal/request_sending_modal";
+
+type FormValues = {
+  id: string;
+  narration: string;
+  amount: string;
+};
 
 const TransferPage = () => {
   const router = useRouter();
-  const [userAccountInfo, setUserAccountInfo] = useState({});
+  const [userAccountInfo, setUserAccountInfo] = useState<any>({});
   const [isBankInfoLoad, setIsBankInfoLoad] = useState(false);
-
   const [amount, setAmount] = useState("");
   const [narration, setNarration] = useState("");
-
-  const [step, setstep] = useState(1);
-
+  const [step, setStep] = useState(1);
   const searchParams = useSearchParams();
-
   const [openDrawer, setOpenDrawer] = useState(false);
+  const { paymentMethodDetails, showMethod, setShowMethod } =
+    usePaymentMethodOverlay();
+  const { otp, setOtp, setOpen: setOpenOtp } = useTransactionPinOverlay();
+  const { openLoader, setOpenLoader } = useLoadingSpinOverlay();
 
-  const handeMovetoNextStep = () => {
-    const step = searchParams.get("step");
-
-    //  console.log(step, "step");
-    if (step && userAccountInfo) {
-      setstep(parseInt(step) + 1);
-      updateUrlParams({ step: "2" });
-      // console.log(step, "step");
-    }
-  };
-  const {
-    data: bankList,
-    isLoading,
-    isError,
-    error,
-  } = useQuery({
-    queryKey: ["banks"], // Unique key for this query
-    queryFn: getBanks, // Your fetch function
-    staleTime: 1000 * 60 * 5, // 5 minutes cache
+  const { data: bankList, isLoading } = useQuery({
+    queryKey: ["banks"],
+    queryFn: getBanks,
+    staleTime: 1000 * 60 * 5,
   });
 
-  type FormValues = {
-    id: string;
+  //console.log(showMethod);
 
-    narration: string;
-    amount: string;
-  };
+  const { register, handleSubmit, control, formState, watch } =
+    useForm<FormValues>({
+      defaultValues: { id: "", narration: "", amount: "" },
+    });
 
-  const {
-    register,
-    handleSubmit,
-    control,
-    formState: { errors, isSubmitting },
-    watch,
-  } = useForm<FormValues>({
-    defaultValues: {
-      id: "",
-
-      narration: "",
-      amount: "",
-    },
-  });
+  const { errors, isSubmitting } = formState;
   const [checked, setChecked] = useState(false);
   const { open, setOpen, bankDetails } = useBankModal();
-
   const [isLoadings, setIsLoading] = useState(false);
+  const params = new URLSearchParams(window.location.search);
 
-  const handleChange = (nextChecked: any) => {
-    setChecked(nextChecked);
+  const handeMovetoNextStep = () => {
+    if (userAccountInfo) {
+      setStep(2);
+      updateUrlParams({ step: "2" });
+    }
   };
 
   useEffect(() => {
+    if (userAccountInfo?.data?.accountNumber === undefined) {
+      setStep(1);
+      updateUrlParams({ step: "1" });
+    }
+  }, [userAccountInfo]);
+  useEffect(() => {
+    const stepFromParams = params.get("step") || "1";
+
+    setStep(Number(stepFromParams));
+    updateUrlParams({ step: stepFromParams });
+  }, [params]);
+  useEffect(() => {
     const fetchBankDetails = async () => {
       if (bankDetails?.bankCode === undefined && watch("id") === "") return;
-
       try {
-        // setIsBankInfoLoad(true);
-        if (
-          bankDetails?.bankCode &&
-          watch("id") !== "" &&
-          watch("id").length === 10
-        ) {
+        if (bankDetails?.bankCode && watch("id")?.length === 10) {
           setIsLoading(true);
-
           const response = await resolveAccountInfo(
             watch("id"),
             bankDetails?.bankCode
           );
           setUserAccountInfo(response);
           setIsBankInfoLoad(true);
-
-          //@ts-ignore
-          if (response?.code !== "00") {
+          if (
+            //@ts-ignore
+            response?.responseCode !== "00"
+          ) {
             toast.error("Invalid account number. Please try again.");
             setIsBankInfoLoad(false);
           }
         }
-      } catch (error) {
+      } catch {
         toast.error("Error fetching bank details. Please try again later.");
         setIsBankInfoLoad(false);
       } finally {
@@ -144,32 +132,92 @@ const TransferPage = () => {
   }, [bankDetails, watch("id")]);
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
-    console.log(data, "data");
+    console.log(data, "submitted");
   };
   useEffect(() => {
-    if (!userAccountInfo) {
-      setstep(1);
-      updateUrlParams({ step: "1" });
-    }
-  }, [userAccountInfo]);
-  //console.log(amount);
+    if (!otp || otp.length !== 4) return;
 
-  const ConfirmDrawer = ({ receiverAccountInfo, amount, narration }: any) => {
-    const { data, loading, error, refresh } = useManagementData();
-    const { open, setOpen } = useTransactionPinOverlay();
+    const handleTransaction = async () => {
+      if (isSubmitting || isLoadings || isLoading) return;
 
-    //console.log(data);
+      const toastId = toast.loading("Verifying PIN...");
+
+      try {
+        await verifyTransactionPin(otp);
+        toast.dismiss(toastId);
+
+        setOpenLoader(true);
+
+        const response = await tranferToBank({
+          accountNumber: userAccountInfo.data.accountNumber,
+          accountName: userAccountInfo.data.accountName,
+          accountCode: userAccountInfo.data.bankCode,
+          amount: watch("amount"),
+          naration: watch("narration"),
+          bankName: bankDetails.bankName,
+          type: paymentMethodDetails?.value,
+          nameEnquiryReference: userAccountInfo.data.sessionId,
+          isBeneficiary: checked,
+          m: "web",
+        });
+        //  console.log(response);
+        setStep(4);
+        updateUrlParams({ step: "4" });
+        setOpenDrawer(false);
+        setOpen(false);
+        setOtp("");
+        setOpenOtp(false);
+
+        addUrlParam(
+          "ref",
+          //@ts-ignore
+          response.ref
+        );
+        addUrlParam("status", "success");
+      } catch (error: any) {
+        console.error("Transaction error:", error);
+        setOtp("");
+
+        toast.dismiss(toastId);
+
+        if (error?.response?.data?.success === "false 1") {
+          toast.error("Incorrect PIN");
+        } else {
+          toast.error(
+            error?.response?.data?.message ||
+              "Could not complete transaction, try again"
+          );
+        }
+      } finally {
+        setOpenLoader(false);
+      }
+    };
+
+    handleTransaction();
+  }, [
+    otp,
+    isSubmitting,
+    isLoadings,
+    isLoading,
+    // beneficiaryDetalis,
+    watch,
+    paymentMethodDetails,
+    verifyTransactionPin,
+    createWirepayment,
+  ]);
+
+  // console.log(userAccountInfo.accountNumber);
+  const ConfirmDrawer = ({ receiverAccountInfo }: any) => {
+    const { data, loading } = useManagementData();
+    const { setOpen } = useTransactionPinOverlay();
 
     return (
       <Drawer open={openDrawer} onOpenChange={setOpenDrawer}>
-        <DrawerContent className="mx-auto max-w-[500px] bg-white rounded-tl-[24px] rounded-tr-[24px] border-0 focus-visible:outline-none">
-          {/* Header */}
-          <DrawerHeader className="relative bg-main-100 p-6 text-left text-white">
-            <div className="mx-auto w-full max-w-[500px]">
-              <DrawerTitle className="text-xl font-bold text-text-secondary-200 text-[20px] font-sora">
-                Confirm Transaction
-              </DrawerTitle>
-            </div>
+        <DrawerContent className="mx-auto w-full max-w-[500px] bg-white rounded-t-2xl border-0 focus-visible:outline-none">
+          <DrawerHeader className="relative bg-main-100 p-6 ">
+            <DrawerTitle className="text-xl font-bold font-sora">
+              Confirm Transaction
+            </DrawerTitle>
             <button
               onClick={() => setOpenDrawer(false)}
               className="absolute right-6 top-6 flex h-8 w-8 items-center justify-center rounded-full bg-white text-[#000]"
@@ -178,88 +226,44 @@ const TransferPage = () => {
             </button>
           </DrawerHeader>
 
-          {/* Body Content */}
-          <div className="mx-auto w-full max-w-[614px] p-6">
-            {/* Transaction Details */}
-            <div className="space-y-4">
-              <div className="w-full flex justify-center items-center">
-                <h2 className="text-text-secondary-200 font-bold text-[32px] font-inter">
-                  <sub>{currencySymbols("NGN")}</sub>
-                  {numberWithCommas(watch("amount").replace(",", ""))}
-                </h2>
-              </div>
-
-              <div className="flex justify-between">
-                <span className="text-gray-500">Amount:</span>
-                <span className="font-medium">
-                  <sub>{currencySymbols("NGN")}</sub>
-                  {numberWithCommas(watch("amount").replace(",", ""))}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Bank:</span>
-                <span className="font-medium">
-                  {" "}
-                  {/*** @ts-ignore */}
-                  {bankDetails && bankDetails?.bankName}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Account Number:</span>
-                <span className="font-medium">
-                  {" "}
-                  {/*** @ts-ignore */}
-                  {receiverAccountInfo &&
-                    receiverAccountInfo.customer?.account?.number}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Name:</span>
-                <span className="font-medium">
-                  {" "}
-                  {/*** @ts-ignore */}
-                  {receiverAccountInfo &&
-                    receiverAccountInfo?.customer?.account?.name}
-                </span>
-              </div>
-              <div className="flex justify-between">
-                <span className="text-gray-500">Transaction Fee:</span>
-                {loading ? (
-                  <div className="h-5 w-20 animate-pulse rounded bg-gray-200" />
-                ) : (
-                  <span className="font-medium">
-                    <sub>{currencySymbols("NGN")}</sub>
-                    {data?.tfee}
-                  </span>
-                )}
-              </div>
+          <div className="p-6 space-y-4">
+            <div className="text-center">
+              <h2 className="text-[28px] font-bold text-[#242E3E]">
+                <sub>{currencySymbols("NGN")}</sub>
+                {numberWithCommas(watch("amount").replace(",", ""))}
+              </h2>
             </div>
 
-            {/* Divider */}
+            <div className="flex justify-between text-sm sm:text-base">
+              <span className="text-gray-500">Bank:</span>
+              <span>{bankDetails?.bankName}</span>
+            </div>
+            <div className="flex justify-between text-sm sm:text-base">
+              <span className="text-gray-500">Account:</span>
+              <span>{receiverAccountInfo?.data?.accountNumber ?? "-"}</span>
+            </div>
+            <div className="flex justify-between text-sm sm:text-base">
+              <span className="text-gray-500">Name:</span>
+              <span>{receiverAccountInfo?.data?.accountName ?? "-"}</span>
+            </div>
+
             <div className="my-6 border-t border-gray-200" />
 
-            {/* Total */}
             <div className="flex justify-between text-lg font-semibold">
               <span>Total:</span>
-
-              {loading ? (
-                <div className="h-5 w-20 animate-pulse rounded bg-gray-200" />
-              ) : (
-                <span className="font-medium">
-                  <sub>{currencySymbols("NGN")}</sub>
-                  {numberWithCommas(
-                    parseFloat(watch("amount").replace(",", "")) +
-                      parseFloat(data?.tfee)
-                  )}
-                </span>
-              )}
+              <span>
+                <sub>{currencySymbols("NGN")}</sub>
+                {numberWithCommas(
+                  parseFloat(watch("amount").replace(",", "")) +
+                    parseFloat(data?.tfee ?? "0")
+                )}
+              </span>
             </div>
 
-            {/* Action Buttons */}
-            <div className="mt-8 flex gap-3 items-center">
+            <div className="mt-6 flex flex-col sm:flex-row gap-3">
               <button
                 onClick={() => setOpenDrawer(false)}
-                className=" rounded-lg border border-gray-300 h-[60px] flex justify-center items-center  px-3  w-fit min-w-[120px] font-medium text-gray-700"
+                className="rounded-lg border border-gray-300 h-[50px] sm:h-[60px] w-full sm:w-auto px-6 font-medium text-gray-700"
               >
                 Cancel
               </button>
@@ -268,9 +272,9 @@ const TransferPage = () => {
                   setOpenDrawer(false);
                   setOpen(true);
                 }}
-                className="w-full rounded-xl cursor-pointer  bg-primary-100 text-white font-inter font-medium text-[20px] h-[60px] flex justify-center items-center"
+                className="w-full sm:w-auto h-[50px] sm:h-[60px] rounded-xl bg-primary-100 text-white font-medium"
               >
-                Confrim
+                Confirm
               </Button>
             </div>
           </div>
@@ -281,370 +285,204 @@ const TransferPage = () => {
 
   return (
     <div className="w-full mt-4">
-      <div className="flex w-full justify-between items-center ">
-        <div
-          className="h-10.5 w-10.5 flex items-center justify-center rounded-[12px] border border-[#6C757D] cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft color="#6C757D" />
-        </div>
-
-        <div className="flex items-center gap-2 cursor-pointer">
-          <ArchiveMinus
-            className="text-primary-100"
-            color="#D70D4A"
-            size={20}
-          />
-          <span className="text-secondary-500 font-normal text-base font-inter ">
-            Transactions
-          </span>
-        </div>
-      </div>
-      <div
-        className="h-[calc(100vh-125px)] w-full flex flex-col-reverse overflow-auto "
-        style={{
-          scrollbarWidth: "none",
-          msOverflowStyle: "none",
-        }}
-      >
-        <div className="w-full max-w-[640px] mx-auto   rounded-tl-[42px] rounded-tr-[42px] flex flex-col gap-[42px] justify-center items-center">
-          <div className="flex w-full flex-col gap-4 justify-center items-center">
-            <div className="w-full text-center">
-              <h1 className="text-secondary-500 text-[32px] text-center font-sora font-bold  leading-[48px]">
+      <div className="min-h-[calc(100vh-125px)] w-full flex  overflow-auto lg:overflow-visible flex-col-reverse">
+        <div className="w-full max-w-[640px] mx-auto px-0 sm:px-0 md:px-0 lg:px-0 flex flex-col gap-10">
+          {/* Title */}
+          {step !== 4 && (
+            <div className="text-center mt-4">
+              <h1 className="text-[26px] sm:text-[32px] font-bold font-sora text-secondary-500">
                 Send Money
               </h1>
-              <span className="text-[14px] font-normal font-inter text-center  text-[#464646] leading-[28px] mt-4 inline-block">
+              <p className="text-sm sm:text-base text-[#464646] mt-2">
                 Select a previous or send to a new recipient
-              </span>
+              </p>
             </div>
-          </div>
+          )}
 
-          <div className="w-full bg-white rounded-tl-[42px] rounded-tr-[42px] lg:px-[72px] lg:pt-16 gap-6">
+          {/* Form */}
+          <div className="bg-white rounded-t-3xl p-6 sm:p-8 lg:px-[72px] lg:pt-16">
             <form
-              id="sign-up"
-              className=" [&>label]:block flex flex-col gap-6"
+              id="transfer-form"
+              className="flex flex-col gap-6"
               onSubmit={handleSubmit(onSubmit)}
             >
               {step === 1 && (
                 <>
-                  <Label htmlFor="account" className="flex flex-col gap-4 ">
-                    <span className="font-inter font-normal text-base text-label-100">
+                  <Label htmlFor="id" className="flex flex-col gap-2">
+                    <span className="font-inter text-base text-label-100">
                       Recipient account
                     </span>
                     <Input
                       {...register("id", {
                         required: "Account number is required",
-                        maxLength: {
-                          value: 10,
-                          message: "Account number must be 10 digits",
-                        },
-                        minLength: {
-                          value: 10,
-                          message: "Account number must be 10 digits",
-                        },
-                        pattern: {
-                          value: /^[0-9]{10}$/,
-                          message: "Only numbers (0-9) allowed",
-                        },
+                        minLength: { value: 10, message: "Must be 10 digits" },
+                        maxLength: { value: 10, message: "Must be 10 digits" },
                       })}
-                      name="id"
-                      id="id"
                       type="number"
-                      autoComplete="off"
-                      inputMode="numeric"
-                      maxLength={10}
-                      placeholder="Enter your account number"
-                      className="h-[60px] mt-4 py-[15] px-[16px] rounded-[10px] border border-[#faf7ff] outline-0  bg-[#FAF7FF] placeholder:text-base  placeholder:font-normal placeholder:text-placeholder-100  focus-visible:ring-[#faf7ff] focus-visible:ring-offset-0 placeholder:font-inter font-inter  text-base font-normal [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      placeholder="Enter account number"
+                      className="h-[56px] bg-[#FAF7FF]"
                     />
-
                     {errors.id && (
-                      <p className="text-xs text-red-500 mt-3">
+                      <p className="text-xs text-red-500">
                         {errors.id.message}
                       </p>
                     )}
                   </Label>
 
+                  {/* Bank selector */}
                   <div>
-                    <label
-                      htmlFor="Bank"
-                      className="font-inter font-normal text-base text-label-100"
-                    >
+                    <label className="font-inter text-base text-label-100">
                       Bank
                     </label>
-                    {bankDetails.length === 0 && (
+                    {bankDetails.bankName ? (
+                      <div
+                        className="mt-3 py-2.5 px-4 bg-[#FAF7FF] border border-[#EFD1DC] rounded-[10px] flex items-center justify-between"
+                        onClick={() => setOpen(true)}
+                      >
+                        <div className="flex gap-3 items-center">
+                          <Image
+                            src={bankLogo}
+                            alt={bankDetails.bankName}
+                            className="w-10 h-10"
+                          />
+                          <span className="text-[#07052A] font-inter">
+                            {bankDetails.bankName}
+                          </span>
+                        </div>
+                        <ChevronDown size={20} />
+                      </div>
+                    ) : (
                       <Controller
-                        name={"id"}
+                        name="id"
                         control={control}
-                        defaultValue={bankDetails?.bankCode || ""}
-                        render={({ field: { onChange } }) => (
+                        render={() => (
                           <button
-                            onClick={() => setOpen(true)}
                             type="button"
-                            className="h-[60px] w-full mt-4 py-[15px] px-[16px] rounded-[10px] border border-[#faf7ff] outline-0 bg-[#FAF7FF] text-[#B4ACCA] text-base font-normal font-inter flex items-center justify-between"
+                            onClick={() => setOpen(true)}
+                            className="mt-3 h-[56px] w-full py-3 px-4 rounded-[10px] bg-[#FAF7FF] text-[#B4ACCA] text-base font-inter flex items-center justify-between"
                           >
                             Select bank
-                            <svg
-                              xmlns="http://www.w3.org/2000/svg"
-                              width="16"
-                              height="16"
-                              viewBox="0 0 24 24"
-                              fill="none"
-                              stroke="currentColor"
-                              strokeWidth="2"
-                              strokeLinecap="round"
-                              strokeLinejoin="round"
-                            >
-                              <path d="M6 9l6 6 6-6" />
-                            </svg>
+                            <ChevronDown size={16} />
                           </button>
                         )}
                       />
                     )}
                   </div>
-                  {bankDetails.bankName !== undefined && (
-                    <div
-                      className="py-[10px] px-4 bg-[#FAF7FF] border border-[#EFD1DC] rounded-[10px] flex gap-[10px] items-center justify-between"
-                      onClick={() => setOpen(true)}
-                    >
-                      <div className="flex gap-[10px] items-center">
-                        <Image
-                          src={bankLogo}
-                          alt={bankDetails?.bankName}
-                          className="w-10.5 h-10.5"
-                        />
-                        <span className="text-[#07052A] font-normal text-base font-inter">
-                          {bankDetails.bankName}
-                        </span>
-                      </div>
-                      <ChevronDown size={20} />
-                    </div>
-                  )}
 
+                  {/* Verification states */}
                   {isLoadings && (
-                    <div className="flex items-center gap p-2.5 gap-4 bg-green-100 rounded-[10px]">
+                    <div className="flex items-center gap-3 p-3 bg-green-50 rounded-[10px]">
                       <FaSpinner
-                        size={20}
-                        className="animate-spin text-green-300"
-                      />
-                      {/** @ts-ignore */}
-                      <span className="text-green-300 font-semibold text-base font-inter ">
-                        {
-                          //@ts-ignore
-                          userAccountInfo?.message
-                        }
-                      </span>
-                    </div>
-                  )}
-                  {/** @ts-ignore */}
-                  {isLoadings ? (
-                    <div className="flex items-center gap p-2.5 gap-4 bg-green-100 rounded-[10px]">
-                      <FaSpinner
-                        size={20}
+                        size={18}
                         className="text-green-500 animate-spin"
                       />
-                      {/** @ts-ignore */}
-                      <span className="text-green-500 font-semibold text-base font-inter ">
+                      <span className="text-green-600 text-sm font-medium">
                         Verifying account details...
                       </span>
                     </div>
-                  ) : //@ts-ignore
-                  userAccountInfo.code === "00" ? (
-                    <div className="flex items-center gap p-2.5 gap-4">
-                      <CheckCircle2 fill="#1FBA79" color="#fff" size={32} />
-                      {/** @ts-ignore */}
-                      <span className="text-[#07052A] font-semibold text-base font-inter ">
-                        {
-                          //@ts-ignore
-                          userAccountInfo?.customer?.account?.name
-                        }
+                  )}
+                  {/* Success / Error */}
+                  {!isLoadings && userAccountInfo?.responseCode === "00" && (
+                    <div className="flex items-center gap-3 p-3">
+                      <CheckCircle2 fill="#1FBA79" color="#fff" size={28} />
+                      <span className="text-[#07052A] font-semibold text-base">
+                        {userAccountInfo?.data?.accountName}
                       </span>
                     </div>
-                  ) : (
-                    //@ts-ignore
-                    userAccountInfo !== undefined ||
-                    //@ts-ignore
-                    (userAccountInfo.code !== "00" && (
-                      <div className="flex items-center gap p-2.5 gap-4 bg-red-50 rounded-[10px]">
-                        <CloseCircle fill="red" color="red" size={32} />
-                        {/** @ts-ignore */}
-                        <span className="text-[red] font-semibold text-base font-inter ">
-                          {
-                            //@ts-ignore
-                            userAccountInfo?.message
-                          }
-                        </span>
-                      </div>
-                    ))
                   )}
                 </>
               )}
 
+              {/* Step 2 */}
               {step === 2 && (
                 <div className="flex flex-col gap-6">
-                  <div className="py-[10px] px-4 bg-[#fff] border border-[#FAF7FF] rounded-[10px] flex gap-[10px] items-center justify-between">
-                    <div className="flex gap-[10px] items-center">
-                      <Image
-                        src={bankLogo}
-                        alt={bankDetails?.bankName}
-                        className="w-10.5 h-10.5"
-                      />
-
-                      <div>
-                        <h3 className="text-[#07052A] font-bold font-sora  text-[20px]">
-                          {/***@ts-ignore */}
-                          {userAccountInfo.customer.account.name}
-                        </h3>
-
-                        <div className="text-[#474256] font-normal font-inter text-[14px]">
-                          <span className="text-[#474256] font-normal font-inter text-[14px]">
-                            {bankDetails.bankName}
-                          </span>{" "}
-                          &nbsp;
-                          {
-                            <span className="text-[#474256] font-normal font-inter text-[14px]">
-                              {/***@ts-ignore */}
-                              {userAccountInfo.customer.account.number}
-                            </span>
-                          }
-                        </div>
-                      </div>
+                  <div className="py-3 px-4 bg-white border border-[#FAF7FF] rounded-[10px] flex items-center gap-3">
+                    <Image
+                      src={bankLogo}
+                      alt={bankDetails?.bankName}
+                      className="w-10 h-10"
+                    />
+                    <div>
+                      <h3 className="font-sora text-lg font-semibold">
+                        {userAccountInfo?.data?.accountName}
+                      </h3>
+                      <p className="text-sm text-[#474256]">
+                        {bankDetails.bankName} •{" "}
+                        {userAccountInfo?.data?.accountNumber}
+                      </p>
                     </div>
                   </div>
 
-                  <Label htmlFor="amount" className="flex flex-col gap-4">
-                    <span className="font-inter font-normal text-base text-label-100">
+                  <Label htmlFor="amount" className="flex flex-col gap-2">
+                    <span className="font-inter text-base text-label-100">
                       Amount
                     </span>
                     <Input
                       {...register("amount", {
                         required: "Amount is required",
-                        validate: (value) => {
-                          const numValue = parseFloat(value.replace(/,/g, ""));
-                          if (isNaN(numValue))
-                            return "Please enter a valid number";
-                          if (numValue <= 0)
-                            return "Amount must be greater than 0";
-                          return true;
-                        },
                       })}
-                      name="amount"
-                      id="amount"
-                      type="text"
-                      inputMode="decimal"
-                      placeholder="Enter amount (e.g., 1,000,000)"
-                      className="h-[60px] mt-4 py-[15] px-[16px] rounded-[10px] border border-[#faf7ff] outline-0 bg-[#FAF7FF] placeholder:text-base placeholder:font-normal placeholder:text-placeholder-100 focus-visible:ring-[#faf7ff] focus-visible:ring-offset-0 placeholder:font-inter font-inter text-base font-normal"
-                      onChange={(e) => {
-                        const { value, selectionStart } = e.target;
-
-                        // Remove all non-digit characters (keep numbers & decimal)
-                        const rawValue = value.replace(/[^0-9.]/g, "");
-
-                        // Split into parts (for decimal handling)
-                        const parts = rawValue.split(".");
-                        const integerPart = parts[0];
-                        const decimalPart = parts[1] ? `.${parts[1]}` : "";
-
-                        // Format integer part with commas
-                        const formattedInteger = integerPart.replace(
-                          /\B(?=(\d{3})+(?!\d))/g,
-                          ","
-                        );
-
-                        // Combine formatted integer + decimal (if any)
-                        const formattedValue = formattedInteger + decimalPart;
-
-                        // Update input value
-                        e.target.value = formattedValue;
-
-                        // Only adjust cursor if selectionStart is not null
-                        if (selectionStart !== null) {
-                          const commaCount = (formattedValue.match(/,/g) || [])
-                            .length;
-                          const originalCommaCount = (
-                            value.substring(0, selectionStart).match(/,/g) || []
-                          ).length;
-                          const cursorOffset = commaCount - originalCommaCount;
-                          const newCursorPosition =
-                            selectionStart + cursorOffset;
-
-                          // Use setTimeout to ensure the cursor update happens after React's state update
-                          setTimeout(() => {
-                            e.target.setSelectionRange(
-                              newCursorPosition,
-                              newCursorPosition
-                            );
-                          }, 0);
-                        }
-                      }}
+                      placeholder="Enter amount (e.g., 1,000)"
+                      className="h-[56px] bg-[#FAF7FF]"
                     />
                     {errors.amount && (
-                      <p className="text-xs text-red-500 ">
+                      <p className="text-xs text-red-500">
                         {errors.amount.message}
                       </p>
                     )}
                   </Label>
 
-                  <Label htmlFor="Email" className="flex flex-col gap-4 ">
-                    <span className="font-inter font-normal text-base text-label-100">
+                  <Label htmlFor="narration" className="flex flex-col gap-2">
+                    <span className="font-inter text-base text-label-100">
                       Narration
                     </span>
                     <Input
                       {...register("narration")}
-                      name="id"
-                      id="id"
-                      type="text"
-                      //   inputMode="numeric"
-                      //   maxLength={10}
                       placeholder="Enter narration"
-                      className="h-[60px] mt-4 py-[15] px-[16px] rounded-[10px] border border-[#faf7ff] outline-0  bg-[#FAF7FF] placeholder:text-base  placeholder:font-normal placeholder:text-placeholder-100  focus-visible:ring-[#faf7ff] focus-visible:ring-offset-0 placeholder:font-inter font-inter  text-base font-normal [appearance:textfield] [&::-webkit-outer-spin-button]:appearance-none [&::-webkit-inner-spin-button]:appearance-none"
+                      className="h-[56px] bg-[#FAF7FF]"
                     />
-
-                    {errors.id && (
-                      <p className="text-xs text-red-500 mt-3">
-                        {errors.id.message}
-                      </p>
-                    )}
                   </Label>
+                  <PaymentMethodSelector
+                    control={control}
+                    paymentMethodDetails={paymentMethodDetails}
+                    setShowMethod={setShowMethod}
+                  />
+                </div>
+              )}
+              {step === 4 && <TransactionLastStage />}
+              {/* Switch & Buttons */}
+              {step !== 4 && (
+                <div className="flex justify-between items-center">
+                  <span className="font-inter text-sm sm:text-base text-[#242E3E]">
+                    Save as Favourite?
+                  </span>
+                  <Switch
+                    checked={checked}
+                    onChange={(v) => setChecked(v)}
+                    onColor="#D70D4A"
+                    height={20}
+                    width={38}
+                  />
                 </div>
               )}
 
-              <div className="flex justify-between items-center ">
-                <span className="font-normal text-base text-text-secondary-200 font-inter">
-                  Save as Favourite?
-                </span>
-                <Switch
-                  checked={checked}
-                  onChange={handleChange}
-                  onColor="#D70D4A"
-                  onHandleColor="#2693e6"
-                  handleDiameter={15}
-                  uncheckedIcon={false}
-                  checkedIcon={false}
-                  boxShadow="0px 1px 5px rgba(0, 0, 0, 0.6)"
-                  activeBoxShadow="0px 0px 1px 10px rgba(0, 0, 0, 0.2)"
-                  height={20}
-                  width={38}
-                  className="react-switch "
-                  id="material-switch"
-                />
-              </div>
+              {/* Continue Button */}
               {step === 1 && (
                 <Button
                   type="submit"
                   onClick={handeMovetoNextStep}
-                  disabled={isBankInfoLoad === false}
-                  className="w-full rounded-xl mb-20 cursor-pointer mt-4 bg-primary-100 text-white font-inter font-medium text-[20px] h-[60px] flex justify-center items-center"
+                  disabled={!isBankInfoLoad}
+                  className="w-full rounded-xl h-[56px] bg-primary-100 text-white font-inter text-lg mt-4"
                 >
                   Continue
                 </Button>
               )}
 
-              {step === 2 && (
+              {step !== 1 && step !== 4 && (
                 <Button
                   type="submit"
                   onClick={() => setOpenDrawer(true)}
                   disabled={isSubmitting}
-                  className="w-full rounded-xl mb-20 cursor-pointer mt-4 bg-primary-100 text-white font-inter font-medium text-[20px] h-[60px] flex justify-center items-center"
+                  className="w-full rounded-xl h-[56px] bg-primary-100 text-white font-inter text-lg mt-4"
                 >
                   Continue
                 </Button>
@@ -654,16 +492,12 @@ const TransferPage = () => {
         </div>
       </div>
 
-      {/*** BANK MODAL */}
-
-      <ConfirmDrawer
-        receiverAccountInfo={userAccountInfo}
-        amount={amount}
-        narration={narration}
-      />
-
+      {/* Modals */}
+      <ConfirmDrawer receiverAccountInfo={userAccountInfo} />
       <BankModal bankList={bankList} />
       <TransactionPinModal />
+
+      <LoaderModal />
     </div>
   );
 };

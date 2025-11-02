@@ -65,7 +65,6 @@ export const registerUser = async (
     if (error instanceof Error) {
       throw error;
     }
-    //  console.error("Unknown error occurred while checking email");
     throw new Error("Unknown error occurred while checking email");
   }
 };
@@ -80,7 +79,6 @@ export const sendPhoneNUmberVerification = async (): Promise<
     if (error instanceof Error) {
       throw error;
     }
-    //  console.error("Unknown error occurred while checking email");
     throw new Error("Unknown error occurred while checking email");
   }
 };
@@ -96,7 +94,6 @@ export const verifyPhoneNumberUsedForRegistration = async (
     if (error instanceof Error) {
       throw error;
     }
-    //  console.error("Unknown error occurred while checking email");
     throw new Error("Unknown error occurred while checking email");
   }
 };
@@ -112,7 +109,6 @@ export const setTransactionPIN = async (
     if (error instanceof Error) {
       throw error;
     }
-    //  console.error("Unknown error occurred while checking email");
     throw new Error("Unknown error occurred while checking email");
   }
 };
@@ -127,7 +123,6 @@ export const verifyTransactionPin = async (
     if (error instanceof Error) {
       throw error;
     }
-    //  console.error("Unknown error occurred while checking email");
     throw new Error("Unknown error occurred while checking email");
   }
 };
@@ -149,7 +144,6 @@ export const verifyLoginPin = async (
     if (error instanceof Error) {
       throw error;
     }
-    //  console.error("Unknown error occurred while checking email");
     throw new Error("Unknown error occurred while checking email");
   }
 };

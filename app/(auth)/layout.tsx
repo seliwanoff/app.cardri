@@ -22,7 +22,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
       />
 
       <div className="h-screen flex   justify-start  relative">
-        <div className="h-full max-w-[553px]  flex justify-center items-center fixed bg-white">
+        <div className="h-full max-w-[553px]  lg:flex hidden justify-center items-center fixed bg-white">
           <div className="flex flex-col gap-[46px] h-[90%] justify-center items-center w-full mx-auto pl-18 pr-18 ">
             <div className="flex  justify-start items-start w-full">
               <Image
@@ -73,7 +73,9 @@ export default function Layout({ children }: { children: React.ReactNode }) {
           </div>
         </div>
         {/* Your layout structure */}
-        <div className="flex-1 ml-[553px] bg-[#F5F2FB]">{children}</div>
+        <div className="flex-1 lg:ml-[553px] bg-[#F5F2FB] h-full lg:p-0 p-4">
+          {children}
+        </div>
       </div>
     </>
   );

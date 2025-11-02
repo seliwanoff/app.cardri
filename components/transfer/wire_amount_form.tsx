@@ -24,6 +24,8 @@ import { Button } from "@/components/ui/button";
 import { FaSpinner } from "react-icons/fa";
 import {
   useBankModal,
+  useLoadingSpinOverlay,
+  usePaymentMethodOverlay,
   useTransactionPinOverlay,
   useWireBeneficiaryDetailsOverlay,
 } from "@/stores/overlay";
@@ -36,7 +38,7 @@ import BankModal from "@/components/modal/bankModal";
 import { useQuery } from "@tanstack/react-query";
 import Image from "next/image";
 import { toast } from "sonner";
-import { updateUrlParams } from "@/lib/urlParams";
+import { addUrlParam, updateUrlParams } from "@/lib/urlParams";
 
 import {
   Drawer,
@@ -60,6 +62,8 @@ import {
   SelectTrigger,
 } from "../ui/select";
 import { verifyTransactionPin } from "@/services/_request";
+import LoaderModal from "../modal/request_sending_modal";
+import PaymentMethodSelector from "../paymentMethodSelector";
 
 const WireAmountFrom = () => {
   const router = useRouter();
@@ -74,7 +78,10 @@ const WireAmountFrom = () => {
 
   const [openDrawer, setOpenDrawer] = useState(false);
 
-  const { otp } = useTransactionPinOverlay();
+  const { otp, setOtp } = useTransactionPinOverlay();
+  const { openLoader, setOpenLoader } = useLoadingSpinOverlay();
+  const { paymentMethodDetails, showMethod, setShowMethod } =
+    usePaymentMethodOverlay();
 
   const {
     data: exchangeRate,
@@ -95,6 +102,7 @@ const WireAmountFrom = () => {
     narration: string;
     amount: string;
     purpose: string;
+    type?: string;
   };
 
   const {
@@ -108,6 +116,7 @@ const WireAmountFrom = () => {
       narration: "",
       amount: "",
       purpose: "",
+      type: "",
     },
   });
   const [checked, setChecked] = useState(false);
@@ -120,6 +129,9 @@ const WireAmountFrom = () => {
   };
 
   const onSubmit: SubmitHandler<FormValues> = async (data) => {
+    if (paymentMethodDetails.value === undefined) {
+      return toast.error("Please select a payment method");
+    }
     setOpenDrawer(true);
   };
   useEffect(() => {
@@ -134,17 +146,35 @@ const WireAmountFrom = () => {
       if (isSubmitting || isLoadings || isLoading) return;
       try {
         if (otp && otp.length === 4) {
+          const toastId = toast.loading("verifying pin..");
           await verifyTransactionPin(otp);
-          await createWirepayment({
+
+          toast.dismiss(toastId);
+
+          setOpenLoader(true);
+          const response = await createWirepayment({
             beneficiaryId: beneficiaryDetalis.id,
             purposeId: watch("purpose"),
             amount: watch("amount"),
             currencyfrom: "NGN",
+            balanceType: paymentMethodDetails?.value,
             m: "web",
           });
+          setstep(4);
+          updateUrlParams({ step: "4" });
+          setOpenDrawer(false);
+
+          setOpen(false);
+          setOtp("");
+
+          //@ts-ignore
+          addUrlParam("ref", response.data.ref);
+          addUrlParam("status", "success");
         }
       } catch (e) {
         console.log(e);
+        setOtp("");
+
         //@ts-ignore
         if (e?.response?.data.success === "false 1") {
           toast.error("Incorrect PIN");
@@ -156,6 +186,8 @@ const WireAmountFrom = () => {
               "Could not complete transaction, try again"
           );
         }
+      } finally {
+        setOpenLoader(false);
       }
     };
     sendRequest();
@@ -321,25 +353,6 @@ const WireAmountFrom = () => {
 
   return (
     <div className="w-full mt-4">
-      <div className="flex w-full justify-between items-center ">
-        <div
-          className="h-10.5 w-10.5 flex items-center justify-center rounded-[12px] border border-[#6C757D] cursor-pointer"
-          onClick={() => router.back()}
-        >
-          <ArrowLeft color="#6C757D" />
-        </div>
-
-        <div className="flex items-center gap-2 cursor-pointer">
-          <ArchiveMinus
-            className="text-primary-100"
-            color="#D70D4A"
-            size={20}
-          />
-          <span className="text-secondary-500 font-normal text-base font-inter ">
-            Transactions
-          </span>
-        </div>
-      </div>
       <div
         className="h-[calc(100vh-125px)] w-full flex flex-col-reverse overflow-auto "
         style={{
@@ -585,6 +598,11 @@ const WireAmountFrom = () => {
                   </span>
                 </div>
               </div>
+              <PaymentMethodSelector
+                control={control}
+                paymentMethodDetails={paymentMethodDetails}
+                setShowMethod={setShowMethod}
+              />
 
               <Button
                 disabled={isSubmitting || isLoading || isLoadings}
@@ -606,6 +624,7 @@ const WireAmountFrom = () => {
       />
 
       <TransactionPinModal />
+      <LoaderModal />
     </div>
   );
 };

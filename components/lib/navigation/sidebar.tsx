@@ -9,6 +9,7 @@ import { usePathname, useRouter } from "next/navigation";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { LogOut } from "lucide-react";
 import { useUserStore } from "@/stores/currentUserStore";
+import { useSidebar } from "@/stores/overlay";
 //import { userLogout } from "@/services/auth";
 
 type ComponentProps = {
@@ -39,7 +40,7 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
       <CreateOrganization />
       */}
 
-      <aside className="col-span-1 hidden h-full w-full flex-col bg-white px-4  shadow-[0_0_5px_0_[#0000001A]] xl:flex   ">
+      <aside className="col-span-1 hidden h-full w-full flex-col bg-white px-4  shadow-[0_0_5px_0_[#0000001A]] lg:flex   ">
         {/* -- logo section */}
         <div className="flex  h-[110px] py-6 px-5 justify-center items-center">
           <AspectRatio ratio={24 / 9} className="max-w-[112px] h-[42px]">
