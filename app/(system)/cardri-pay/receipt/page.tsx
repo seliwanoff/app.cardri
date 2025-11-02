@@ -12,9 +12,10 @@ import { ArchiveMinus } from "iconsax-react";
 
 interface ReceiptPageProps {
   searchParams?: any;
+  orderIds: string;
 }
 
-export default function ReceiptPage({ searchParams }: ReceiptPageProps) {
+export default function ReceiptPage({ searchParams, orderIds }: any) {
   const orderId = searchParams?.orderId || "N/A";
   const date = searchParams?.date || "2025-10-30";
   const currency = searchParams?.currency || "NGN";

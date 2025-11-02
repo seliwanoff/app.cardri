@@ -64,7 +64,7 @@ const TransactionLastStage = () => {
       root.render(
         <div id="receipt-to-capture">
           <ReceiptTemplate
-            orderId={ref}
+            orderIds={ref}
             date={new Date(transaction.created_at).toLocaleDateString()}
             items={[
               { name: "Product 1", price: 19.99, quantity: 2 },
