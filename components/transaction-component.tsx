@@ -293,7 +293,7 @@ const TransactionsComponent = ({
             <Table>
               <TableHeader className="bg-[#FAF7FF]  text-[#9292A0] font-normal text-base py-4 px-6 rounded-xl border-0 ">
                 <TableRow>
-                  <TableHead>TRX ID</TableHead>
+                  <TableHead className="xl:block hidden">TRX ID</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>TRX Type</TableHead>
@@ -325,9 +325,9 @@ const TransactionsComponent = ({
       <div className="block">
         <div className="overflow-x-auto bg-white rounded-xl p-6">
           <Table>
-            <TableHeader className="bg-[#FAF7FF] border-b border-[#FAF7FF] text-[#9292A0] font-normal text-base py-4 px-6 rounded-xl">
+            <TableHeader className="bg-[#FAF7FF] border-b text-nowrap border-[#FAF7FF] text-[#9292A0] font-normal text-base py-4 px-6 rounded-xl">
               <TableRow>
-                <TableHead>TRX ID</TableHead>
+                <TableHead className="xl:block hidden">TRX ID</TableHead>
                 <TableHead>Date</TableHead>
                 <TableHead>Amount</TableHead>
                 <TableHead>TRX Type</TableHead>
@@ -343,9 +343,11 @@ const TransactionsComponent = ({
                 allTransactions.slice(0, 10).map((transaction: Transaction) => (
                   <TableRow
                     key={transaction.id}
-                    className="hover:bg-[#FAF7FF] border-b-[#FAF7FF] border-b text-[#474256] font-inter text-base"
+                    className="hover:bg-[#FAF7FF] text-nowrap border-b-[#FAF7FF] border-b text-[#474256] font-inter text-base"
                   >
-                    <TableCell className="">{transaction.ref}</TableCell>
+                    <TableCell className="xl:block hidden">
+                      {transaction.ref}
+                    </TableCell>
                     <TableCell>
                       {new Date(transaction.created_at).toLocaleDateString()}
                     </TableCell>

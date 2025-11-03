@@ -101,7 +101,7 @@ const SigninForm = () => {
   };
 
   return (
-    <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center  mb-28 lg:pt-32 pt-6 ">
+    <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center  lg:mb-28 mb-10 lg:pt-32 pt-6 ">
       <div className="w-full">
         <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl  lg:text-4xl text-left font-sora font-bold  leading-[48px]">
           Welcome back

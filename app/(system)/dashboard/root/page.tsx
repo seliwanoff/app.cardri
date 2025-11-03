@@ -261,8 +261,24 @@ const Dashboard = () => {
               ))}
             </div>
           </div>
-
-          {/*** TRANSACTIONS SECTION (hidden on mobile) ***/}
+          <div className="flex lg:hidden w-full overflow-x-auto [-ms-overflow-style:none] [scrollbar-width:none] [&::-webkit-scrollbar]:hidden">
+            <div
+              className="h-full p-5 rounded-[24px] w-full right-0 flex gap-4 "
+              style={{
+                msOverflowStyle: "none",
+                scrollbarWidth: "none",
+              }}
+            >
+              {SideBarMenuList?.map((menu: any, index) => (
+                <Image
+                  src={menu?.image}
+                  alt={menu.label}
+                  className="object-center"
+                  key={index}
+                />
+              ))}
+            </div>
+          </div>
           <div className="w-full bg-white p-6 rounded-[16px] flex flex-col gap-10.5 ">
             <div className="flex justify-between items-center">
               <h3 className="font-sora font-bold text-text-secondary-200 text-[20px]">
