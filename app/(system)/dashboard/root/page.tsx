@@ -42,6 +42,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 import { cn } from "@/lib/utils";
 import { getNetwork } from "@/services/intra-africa";
+import Link from "next/link";
 
 const IsEmpty = () => {
   return (
@@ -207,7 +208,7 @@ const Dashboard = () => {
                 <Image src={vector} alt="vector object-center" />
               </div>
 
-              <div className="flex items-center -space-x-2">
+              <div className="flex items-center -space-x-2 w-full justify-end">
                 {BeneficiaryList?.slice(0, 4).map((ben) => (
                   <Image
                     src={ben.image}
@@ -219,7 +220,7 @@ const Dashboard = () => {
                   />
                 ))}
                 {BeneficiaryList?.length > 4 && (
-                  <div className="flex items-center justify-center max-w-10.5 w-full h-10.5 bg-primary-100 font-inter text-[14px] text-white rounded-full">
+                  <div className=" items-center flex justify-center w-[42px] h-[42px] bg-primary-100 font-inter text-[14px] text-white rounded-full">
                     +{BeneficiaryList.length - 4}
                   </div>
                 )}
@@ -267,15 +268,18 @@ const Dashboard = () => {
               <h3 className="font-sora font-bold text-text-secondary-200 text-[20px]">
                 Transactions
               </h3>
-              <span className="text-[#B4ACCA] text-base font-normal font-inter cursor-pointer">
+              <Link
+                href={"/transaction"}
+                className="text-[#B4ACCA] text-base font-normal font-inter cursor-pointer"
+              >
                 See all
-              </span>
+              </Link>
             </div>
 
             <Table>
-              <TableHeader className="bg-[#FAF7FF] border-b border-[#FAF7FF] text-[#9292A0] font-normal text-base py-4 px-6 rounded-xl">
+              <TableHeader className="bg-[#FAF7FF] text-nowrap border-b border-[#FAF7FF] text-[#9292A0] font-normal text-base py-4 px-6 rounded-xl">
                 <TableRow>
-                  <TableHead>TRX ID</TableHead>
+                  <TableHead className="xl:block hidden">TRX ID</TableHead>
                   <TableHead>Date</TableHead>
                   <TableHead>Amount</TableHead>
                   <TableHead>TRX Type</TableHead>
@@ -289,9 +293,9 @@ const Dashboard = () => {
                   allTransactions.slice(0, 10).map((transaction: any) => (
                     <TableRow
                       key={transaction.id}
-                      className="font-inter text-base text-[#474256] font-normal py-4 px-6 hover:bg-[#FAF7FF] cursor-pointer border-b border-[#FAF7FF]"
+                      className="font-inter text-base text-nowrap text-[#474256] font-normal py-4 px-6 hover:bg-[#FAF7FF] cursor-pointer border-b border-[#FAF7FF]"
                     >
-                      <TableCell className="font-medium text-nowrap">
+                      <TableCell className="font-medium text-nowrap xl:block hidden">
                         {transaction.ref}
                       </TableCell>
                       <TableCell className="font-medium">
