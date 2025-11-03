@@ -29,7 +29,7 @@ const SignUp = () => {
   return (
     <div
       className={cn(
-        "bg-[#F5F2FB]   flex justify-center items-center",
+        "bg-[#F5F2FB]   flex justify-center items-center lg:p-0 p-6",
         step !== 1 && "lg:h-[100vh]"
       )}
     >

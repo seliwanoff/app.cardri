@@ -129,7 +129,7 @@ const EmailVerify = () => {
   };
   return (
     <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center   lg:pt-32 pt-6 ">
-      <div className="w-full text-center">
+      <div className="w-full text-center g:mt-0 mt-4">
         <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl text-center lg:text-4xl  font-sora font-bold  leading-[48px]">
           Verify Phone Number
         </h1>
