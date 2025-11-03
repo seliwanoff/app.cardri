@@ -83,7 +83,7 @@ const Password = ({ datas }: userData) => {
   const ValidationIndicator = ({ valid, text }: any) => (
     <div
       className={cn(
-        "flex items-center gap-[10px] py-2 px-2  rounded-[100px] w-fit",
+        "flex items-center text-sm p-2 w-fit rounded-[100px]  text-wrap",
         valid ? "bg-[#1BB4461A]" : "bg-white"
       )}
     >
@@ -203,7 +203,7 @@ const Password = ({ datas }: userData) => {
   return (
     <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center ">
       <div className="w-full text-center">
-        <h1 className="text-secondary-500 text-4xl text-center font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl text-center lg:text-4xl  font-sora font-bold  leading-[48px]">
           Create Password
         </h1>
         <span className="text-[22px] font-normal font-inter text-center  text-[#464646] leading-[28px] mt-4 inline-block">
@@ -282,7 +282,7 @@ const Password = ({ datas }: userData) => {
             )}
           </Label>
 
-          <div className="mt-2 grid grid-cols-3 gap-2 text-sm  w-fit mx-auto">
+          <div className="mt-2 grid grid-cols grid-cols-3 gap-2   w-full mx-auto">
             <ValidationIndicator
               valid={validations.length}
               text="8 characters in length"

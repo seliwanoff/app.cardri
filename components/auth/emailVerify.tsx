@@ -128,9 +128,9 @@ const EmailVerify = () => {
     return `${maskedUsername}@${domain}`;
   };
   return (
-    <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center   pt-32 ">
+    <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center   lg:pt-32 pt-6 ">
       <div className="w-full text-center">
-        <h1 className="text-secondary-500 text-4xl text-center font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl text-center lg:text-4xl  font-sora font-bold  leading-[48px]">
           Verify Phone Number
         </h1>
         <span className="text-base font-normal font-inter text-center  text-[#464646] leading-[28px] mt-4 inline-block">

@@ -4,7 +4,7 @@ import React, { useEffect, useState } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { cn } from "@/lib/utils";
-import Goloka from "@/public/assets/signin/Logo.png";
+import Cardri from "@/public/assets/signin/Logo.png";
 import { usePathname, useRouter } from "next/navigation";
 import { AspectRatio } from "@/components/ui/aspect-ratio";
 import { LogOut } from "lucide-react";
@@ -44,7 +44,7 @@ const DashSideBarDesktop: React.FC<ComponentProps> = ({ navMenuList }) => {
         {/* -- logo section */}
         <div className="flex  h-[110px] py-6 px-5 justify-center items-center">
           <AspectRatio ratio={24 / 9} className="max-w-[112px] h-[42px]">
-            <Image src={Goloka} alt="logo" fill />
+            <Image src={Cardri} alt="logo" fill />
           </AspectRatio>
         </div>
 

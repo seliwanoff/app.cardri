@@ -10,6 +10,7 @@ import Slider4 from "@/public/assets/signin/slider4.png";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { useMediaQuery } from "react-responsive";
+import Cardri from "@/public/assets/signin/Logo.png";
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const [activeIndex, setActiveIndex] = useState(0);
@@ -22,7 +23,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         position={`${isDesktop ? "bottom-center" : "top-right"}`}
       />
 
-      <div className="h-screen flex justify-start relative">
+      <div className="h-full flex justify-start relative">
         <div className="h-full max-w-[553px] lg:flex hidden justify-center items-center fixed bg-white">
           <div className="flex flex-col gap-[46px] h-[90%] justify-center items-center w-full mx-auto pl-18 pr-18">
             <div className="flex justify-start items-start w-full">
@@ -77,6 +78,10 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
 
         {/* Right section */}
         <div className="flex-1 lg:ml-[553px] bg-[#F5F2FB] h-full lg:p-0 p-4">
+          {" "}
+          <div className="flex lg:hidden  h-[110px] py-6   items-center w-full justify-start">
+            <Image src={Cardri} alt="logo" />
+          </div>
           {children}
         </div>
       </div>
@@ -88,7 +93,7 @@ export default function Layout({ children }: { children: React.ReactNode }) {
   return (
     <Suspense
       fallback={
-        <div className="flex justify-center items-center h-screen">
+        <div className="flex justify-center items-center h-full">
           Loading...
         </div>
       }

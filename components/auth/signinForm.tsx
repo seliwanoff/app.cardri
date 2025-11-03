@@ -18,6 +18,7 @@ import { useDeviceBindingOverlay } from "@/stores/overlay";
 import DeviceBindingModal from "../modal/device-binding-modal";
 import { useRemoteUserStore } from "@/stores/remoteUser";
 import { useUserStore } from "@/stores/currentUserStore";
+import Link from "next/link";
 
 type FormValues = {
   id: string;
@@ -100,9 +101,9 @@ const SigninForm = () => {
   };
 
   return (
-    <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center  mb-28 pt-32 ">
+    <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center  mb-28 lg:pt-32 pt-6 ">
       <div className="w-full">
-        <h1 className="text-secondary-500 text-4xl text-left font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl  lg:text-4xl text-left font-sora font-bold  leading-[48px]">
           Welcome back
         </h1>
         <span className="text-[22px] font-normal font-inter text-left  text-[#464646] leading-[28px] mt-4 inline-block">
@@ -161,6 +162,14 @@ const SigninForm = () => {
               </span>
             )}
           </Label>
+          <div className="text-center justify-center flex lg:text-base text-sm text-gray-700 font-normal font-inter w-full">
+            <Link
+              href={"/signup"}
+              className="font-semibold  text-primary-100 text-end w-full"
+            >
+              Forgotten Password?
+            </Link>
+          </div>
           <Button
             type="submit"
             disabled={isSubmitting || isLoading}
@@ -172,6 +181,12 @@ const SigninForm = () => {
               `Continue`
             )}
           </Button>
+          <div className="text-center justify-center flex lg:text-base text-sm text-gray-700 font-normal font-inter">
+            <span>Don/'t have an account?</span> &nbsp;
+            <Link href={"/signup"} className="font-semibold  text-primary-100">
+              Sign up
+            </Link>
+          </div>
         </form>
       </div>
       <DeviceBindingModal />

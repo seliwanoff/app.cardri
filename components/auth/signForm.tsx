@@ -14,12 +14,16 @@ import { Input } from "../ui/input";
 import { CountryLisT } from "@/lib/assets";
 import { FaSpinner } from "react-icons/fa";
 import { Button } from "../ui/button";
+import Cardri from "@/public/assets/signin/Logo.png";
+
 import {
   checkEmailInputted,
   checkPhoneInputted,
   checkUsernameInputted,
 } from "@/services/_request";
 import { toast } from "sonner";
+import { AspectRatio } from "../ui/aspect-ratio";
+import Link from "next/link";
 
 type FormValues = {
   firstname: string;
@@ -117,7 +121,7 @@ const SignupForm = ({ setUserData }: PasswordProps) => {
       toast.dismiss(toastId);
       throw error;
     } finally {
-      //toast.dismiss();
+      toast.dismiss();
     }
   };
 
@@ -156,9 +160,9 @@ const SignupForm = ({ setUserData }: PasswordProps) => {
     }
   };
   return (
-    <div className="w-full max-w-[522px] flex flex-col gap-[42px]  justify-center items-center  mb-28 pt-32 ">
+    <div className="w-full max-w-[522px] flex flex-col lg:gap-[42px]  gap-8  justify-center items-center  mb-28 lg:pt-32 pt-6 ">
       <div className="w-full">
-        <h1 className="text-secondary-500 text-4xl text-left font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl  lg:text-4xl text-left font-sora font-bold  leading-[48px]">
           Set up your account
         </h1>
         <span className="text-[22px] font-normal font-inter text-left  text-[#464646] leading-[28px] mt-4">
@@ -331,6 +335,13 @@ const SignupForm = ({ setUserData }: PasswordProps) => {
               `Continue`
             )}
           </Button>
+
+          <div className="text-center justify-center flex lg:text-base text-sm text-gray-700 font-normal font-inter">
+            <span>Already have an account?</span> &nbsp;
+            <Link href={"/signin"} className="font-semibold  text-primary-100">
+              Login
+            </Link>
+          </div>
         </form>
       </div>
     </div>

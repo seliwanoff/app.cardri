@@ -41,9 +41,9 @@ const Intro = () => {
     setOpen(false);
   };
   return (
-    <div className="w-full max-w-[522px] flex flex-col gap-[42px] justify-center items-center  ">
+    <div className="w-full max-w-[522px] flex flex-col gap-[42px] justify-center items-center lg:mt-0 mt-4 ">
       <div className="w-full text-center">
-        <h1 className="text-secondary-500 text-center text-4xl font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500  text-center md:text-3xl sm:text-2xl text-3xl  lg:text-4xl  font-sora font-bold  leading-[48px]">
           Get started with your region
         </h1>
         <span className="text-[22px] text-center font-normal font-inter  text-[#464646] leading-[28px] mt-4 inline-block">
@@ -94,10 +94,10 @@ const Intro = () => {
         <InfoIcon className="h-4.5 text-[#FA9232]" />
 
         <div className="">
-          <h2 className="font-inter text-[10px] font-semibold text-[#474256] leading-[16px]">
+          <h2 className="font-inter text-xs font-bold text-[#474256] ">
             Kindly note
           </h2>
-          <span className="font-inter text-[10px] font-normal text-[#474256]  leading-[16px]">
+          <span className="font-inter text-xs font-normal text-[#474256]  ">
             The documents you can use for verification depend only on your
             selected country of residence. Please double-check your choice.
           </span>

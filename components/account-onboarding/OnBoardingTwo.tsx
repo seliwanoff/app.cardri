@@ -91,12 +91,12 @@ const OnboardingTwo = () => {
 
   return (
     <>
-      <div className="w-full max-w-[640px] bg-white p-16   rounded-tl-[42px] rounded-tr-[42px] flex flex-col gap-[42px] justify-center items-center">
+      <div className="w-full max-w-[640px] bg-white lg:p-16 p-4   rounded-tl-[42px] rounded-tr-[42px] flex flex-col gap-[42px] justify-center items-center">
         <div className="flex w-full flex-col gap-4 justify-center items-center">
           <Image src={check} className="h-16 object-center w-fit" alt="" />
 
           <div className="w-full text-center">
-            <h1 className="text-secondary-500 text-[32px] text-center font-sora font-bold  leading-[48px]">
+            <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl  lg:text-4xl text-center font-sora font-bold  leading-[48px]">
               BVN Verification
             </h1>
             <span className="text-[14px] font-normal font-inter text-center  text-[#464646] leading-[28px] mt-4 inline-block">
