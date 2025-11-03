@@ -165,7 +165,7 @@ const SignupForm = ({ setUserData }: PasswordProps) => {
         <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl  lg:text-4xl text-left font-sora font-bold  leading-[48px]">
           Set up your account
         </h1>
-        <span className="text-[22px] font-normal font-inter text-left  text-[#464646] leading-[28px] mt-4">
+        <span className="text-xl font-normal font-inter text-left  text-[#464646]  mt-4 inline-block">
           Hi there, we would love to know you.
         </span>
       </div>
@@ -173,7 +173,7 @@ const SignupForm = ({ setUserData }: PasswordProps) => {
       <div className="w-full">
         <form
           id="sign-up"
-          className=" [&>label]:block flex flex-col gap-6"
+          className=" [&>label]:block flex flex-col lg:gap-6 gap-3"
           onSubmit={handleSubmit(onSubmit)}
         >
           <Label htmlFor="First name" className="flex flex-col gap-4">
