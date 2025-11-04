@@ -58,7 +58,7 @@ const DashTopNav = () => {
 
   // console.log(profileImage);
   return (
-    <div className="w-full justify-between flex items-center bg-[#fff] py-6 lg:pr-20  lg:pl-[42px]  lg:px-0 px-[30px]">
+    <div className="w-full justify-between flex items-center bg-[#fff] py-6 lg:pr-20  lg:pl-[42px]  lg:px-0 px-[30px] shadow-xl">
       {displayName ? (
         <h2 className="text-secondary-500 font-sora font-bold text-2xl">
           {displayName}

@@ -273,7 +273,7 @@ const Dashboard = () => {
                 <Image
                   src={menu?.image}
                   alt={menu.label}
-                  className="object-center"
+                  className="object-center h-[140px] w-[148px]"
                   key={index}
                 />
               ))}

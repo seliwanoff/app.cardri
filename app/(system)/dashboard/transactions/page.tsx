@@ -190,7 +190,7 @@ export default function TransactionsPage() {
 
   return (
     <div className="w-full flex flex-col gap-8">
-      <div className="justify-between items-center bg-white p-4 rounded-xl mt-4">
+      <div className="justify-between items-center bg-white lg:p-4 p-2 rounded-xl mt-4">
         <div className="rounded-2xl bg-white p-[14px] w-full">
           {/* OPTIONS */}
           <div className="">

@@ -3,7 +3,7 @@ import Image from "next/image";
 import { useUserStore } from "@/stores/currentUserStore";
 import { usePathname } from "next/navigation";
 
-import Logo from "@/public/assets/signin/Logo.png";
+import Logo from "@/public/assets/CardriSvg.svg";
 const DashTopNav2 = () => {
   const currentUser = useUserStore((state) => state.user);
   //console.log("currentUser", currentUser);
@@ -20,7 +20,7 @@ const DashTopNav2 = () => {
   }
 
   return (
-    <div className="w-full justify-between flex items-center bg-[#fff] py-3 pr-20  pl-[60px]">
+    <div className="w-full justify-between flex items-center bg-[#fff] py-3 lg:pr-20  lg:pl-[60px] p-4">
       <Image
         src={Logo}
         alt="Cardri logo "

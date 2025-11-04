@@ -10,7 +10,7 @@ import Slider4 from "@/public/assets/signin/slider4.png";
 import { cn } from "@/lib/utils";
 import { Toaster } from "sonner";
 import { useMediaQuery } from "react-responsive";
-import Cardri from "@/public/assets/signin/Logo.png";
+import Cardri from "@/public/assets/CardriSvg.svg";
 
 function LayoutContent({ children }: { children: React.ReactNode }) {
   const [activeIndex, setActiveIndex] = useState(0);
