@@ -196,114 +196,114 @@ export default function TransactionsPage() {
           <div className="">
             <div className="flex items-center justify-between">
               <div className="flex justify-between gap-4 lg:justify-start items-center w-full">
-                <span>Filter</span>
-
-                <div className="hidden lg:flex lg:gap-4 justify-between w-full">
-                  <Select value={activeStatus} onValueChange={setActiveStatus}>
-                    <SelectTrigger
-                      className={cn(
-                        "w-[150px] rounded-full border border-gray-100 focus:outline-none bg-white focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
-                      )}
+                <div className="flex lg:gap-4 justify-between w-full">
+                  <div className="flex lg:gap-4 w-full items-center">
+                    <span className="lg:block hidden font-medium ">Filter</span>
+                    <Select
+                      value={activeStatus}
+                      onValueChange={setActiveStatus}
                     >
-                      <SelectValue placeholder="Status" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-white border-0">
-                      <SelectGroup>
-                        <SelectItem value="all">All Transaction</SelectItem>
-                        <SelectItem value="debit">Debit</SelectItem>
-                        <SelectItem value="credit">Credit</SelectItem>
-                      </SelectGroup>
-                    </SelectContent>
-                  </Select>
-
-                  {/* DATE */}
-                  <Popover>
-                    <PopoverTrigger asChild>
-                      <Button
-                        variant="outline"
+                      <SelectTrigger
                         className={cn(
-                          "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal bg-white border border-gray-100"
+                          "w-[150px] rounded-full border border-gray-100 focus:outline-none bg-white focus:ring-0 focus:ring-offset-0 focus-visible:ring-0"
                         )}
                       >
-                        {startDate && endDate
-                          ? `${format(startDate, "MMM dd, yyyy")} - ${format(
-                              endDate,
-                              "MMM dd, yyyy"
-                            )}`
-                          : "Select date range"}
-                        <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fff] border border-gray-100">
-                          <Calendar size={20} color="#828282" />
-                        </span>
-                      </Button>
-                    </PopoverTrigger>
-                    <PopoverContent
-                      className="w-auto p-4 bg-white"
-                      align="start"
-                    >
-                      <CalenderDate
-                        mode="range"
-                        selected={{
-                          from: startDate || undefined,
-                          to: endDate || undefined,
-                        }}
-                        onSelect={(
-                          range: { from?: Date; to?: Date } | undefined
-                        ) => {
-                          setStartDate(range?.from || null);
-                          setEndDate(range?.to || null);
-                        }}
-                        className="rounded-md border border-gray-200"
-                        numberOfMonths={2}
-                      />
-                      <div className="flex w-full items-center justify-between mt-4">
-                        <button
-                          className="rounded-full bg-[#F8F8F8] px-4 py-2 text-sm text-blue-500"
-                          onClick={() => {
-                            setStartDate(null);
-                            setEndDate(null);
-                          }}
-                        >
-                          Clear
-                        </button>
-                        <button
-                          className="rounded-full bg-primary-100 px-4 py-2 text-sm text-white"
-                          onClick={() => {
-                            const params = new URLSearchParams(
-                              window.location.search
-                            );
-                            if (startDate) {
-                              params.set("startDate", startDate.toISOString());
-                            } else {
-                              params.delete("startDate");
-                            }
-                            if (endDate) {
-                              params.set("endDate", endDate.toISOString());
-                            } else {
-                              params.delete("endDate");
-                            }
-                            window.history.replaceState(
-                              null,
-                              "",
-                              `${window.location.pathname}?${params.toString()}`
-                            );
-                          }}
-                        >
-                          Apply
-                        </button>
-                      </div>
-                    </PopoverContent>
-                  </Popover>
-                </div>
+                        <SelectValue placeholder="Status" />
+                      </SelectTrigger>
+                      <SelectContent className="bg-white border-0">
+                        <SelectGroup>
+                          <SelectItem value="all">All Transaction</SelectItem>
+                          <SelectItem value="debit">Debit</SelectItem>
+                          <SelectItem value="credit">Credit</SelectItem>
+                        </SelectGroup>
+                      </SelectContent>
+                    </Select>
+                  </div>
 
-                {/* Filter icon for mobile */}
-                <div
-                  onClick={() => setOpenFilter(true)}
-                  className="inline-flex cursor-pointer border-gray-200 items-center justify-center gap-3 rounded-full border bg-white p-1 pr-3 lg:hidden"
-                >
-                  <span className="inline-flex h-8 w-8 items-center justify-center rounded-full bg-[#F8F8F8]">
-                    <Setting4 size={20} />
-                  </span>
-                  <span>Filter</span>
+                  <div className="flex lg:gap-4  w-full items-center justify-end">
+                    <span className="lg:block hidden font-medium ">Sort</span>
+                    <Popover>
+                      <PopoverTrigger asChild>
+                        <Button
+                          variant="outline"
+                          className={cn(
+                            "w-min justify-start gap-3 rounded-full px-3 pr-1 text-center text-sm font-normal bg-white border border-gray-100"
+                          )}
+                        >
+                          {startDate && endDate
+                            ? `${format(startDate, "MMM dd, yyyy")} - ${format(
+                                endDate,
+                                "MMM dd, yyyy"
+                              )}`
+                            : "Select date range"}
+                          <span className="flex h-8 w-8 items-center justify-center rounded-full bg-[#fff] border border-gray-100">
+                            <Calendar size={20} color="#828282" />
+                          </span>
+                        </Button>
+                      </PopoverTrigger>
+                      <PopoverContent
+                        className="w-auto p-4 bg-white"
+                        align="start"
+                      >
+                        <CalenderDate
+                          mode="range"
+                          selected={{
+                            from: startDate || undefined,
+                            to: endDate || undefined,
+                          }}
+                          onSelect={(
+                            range: { from?: Date; to?: Date } | undefined
+                          ) => {
+                            setStartDate(range?.from || null);
+                            setEndDate(range?.to || null);
+                          }}
+                          className="rounded-md border border-gray-200"
+                          numberOfMonths={2}
+                        />
+                        <div className="flex w-full items-center justify-between mt-4">
+                          <button
+                            className="rounded-full bg-[#F8F8F8] px-4 py-2 text-sm text-blue-500"
+                            onClick={() => {
+                              setStartDate(null);
+                              setEndDate(null);
+                            }}
+                          >
+                            Clear
+                          </button>
+                          <button
+                            className="rounded-full bg-primary-100 px-4 py-2 text-sm text-white"
+                            onClick={() => {
+                              const params = new URLSearchParams(
+                                window.location.search
+                              );
+                              if (startDate) {
+                                params.set(
+                                  "startDate",
+                                  startDate.toISOString()
+                                );
+                              } else {
+                                params.delete("startDate");
+                              }
+                              if (endDate) {
+                                params.set("endDate", endDate.toISOString());
+                              } else {
+                                params.delete("endDate");
+                              }
+                              window.history.replaceState(
+                                null,
+                                "",
+                                `${
+                                  window.location.pathname
+                                }?${params.toString()}`
+                              );
+                            }}
+                          >
+                            Apply
+                          </button>
+                        </div>
+                      </PopoverContent>
+                    </Popover>
+                  </div>
                 </div>
               </div>
             </div>

@@ -343,7 +343,7 @@ const TransactionsComponent = ({
                 allTransactions.slice(0, 10).map((transaction: Transaction) => (
                   <TableRow
                     key={transaction.id}
-                    className="hover:bg-[#FAF7FF] text-nowrap border-b-[#FAF7FF] border-b text-[#474256] font-inter text-base"
+                    className="hover:bg-[#FAF7FF] text-clip border-b-[#FAF7FF] border-b text-[#474256] font-inter text-base"
                   >
                     <TableCell className="xl:block hidden">
                       {transaction.ref}
@@ -351,7 +351,7 @@ const TransactionsComponent = ({
                     <TableCell>
                       {new Date(transaction.created_at).toLocaleDateString()}
                     </TableCell>
-                    <TableCell>
+                    <TableCell className="text-nowrap">
                       {getCurrencyByType(transaction.type)}{" "}
                       {numberWithCommas(
                         parseFloat(transaction.amount).toFixed(2)

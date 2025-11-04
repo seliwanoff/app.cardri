@@ -309,7 +309,7 @@ const Dashboard = () => {
                   allTransactions.slice(0, 10).map((transaction: any) => (
                     <TableRow
                       key={transaction.id}
-                      className="font-inter text-base text-nowrap text-[#474256] font-normal py-4 px-6 hover:bg-[#FAF7FF] cursor-pointer border-b border-[#FAF7FF]"
+                      className="font-inter text-base text-clip text-[#474256] font-normal py-4 px-6 hover:bg-[#FAF7FF] cursor-pointer border-b border-[#FAF7FF]"
                     >
                       <TableCell className="font-medium text-nowrap xl:block hidden">
                         {transaction.ref}
@@ -317,7 +317,7 @@ const Dashboard = () => {
                       <TableCell className="font-medium">
                         {new Date(transaction.created_at).toLocaleDateString()}
                       </TableCell>
-                      <TableCell>
+                      <TableCell className="text-nowrap">
                         {getCurrencyByType(transaction.type)}{" "}
                         {numberWithCommas(transaction.amount)}
                       </TableCell>
