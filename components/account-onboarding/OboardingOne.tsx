@@ -15,7 +15,7 @@ const OnboardingOne = () => {
       <div className="flex w-full flex-col gap-4 justify-center items-center">
         <Image src={check} className="h-16 object-center w-fit" alt="" />
         <div className="w-full text-center">
-          <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl  lg:text-4xl text-center font-sora font-bold  leading-[48px]">
+          <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-2xl  lg:text-4xl text-center font-sora font-bold  leading-[48px]">
             Verify your identity
           </h1>
           <span className="text-[14px] font-normal font-inter text-center  text-[#464646] leading-[28px] mt-4 inline-block">

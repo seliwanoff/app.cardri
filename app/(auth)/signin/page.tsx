@@ -23,7 +23,7 @@ const SignIn = () => {
     <div
       className={cn(
         "bg-[#F5F2FB]   flex justify-center items-center lg:p-0 p-3",
-        step !== 1 && "h-[100vh]"
+        step !== 1 && "lg:h-[100vh]"
       )}
     >
       <SigninForm />

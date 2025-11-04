@@ -43,7 +43,7 @@ const Intro = () => {
   return (
     <div className="w-full max-w-[522px] flex flex-col gap-[42px] justify-center items-center lg:mt-0 mt-4 ">
       <div className="w-full text-center">
-        <h1 className="text-secondary-500  text-center md:text-3xl sm:text-2xl text-3xl  lg:text-4xl  font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500  text-center md:text-3xl sm:text-2xl text-2xl  lg:text-4xl  font-sora font-bold  leading-[48px]">
           Get started with your region
         </h1>
         <span className="text-[22px] text-center font-normal font-inter  text-[#464646] leading-[28px] mt-4 inline-block">

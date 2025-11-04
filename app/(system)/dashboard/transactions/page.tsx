@@ -75,7 +75,7 @@ const StatusPill: React.FC<StatusPillProps> = ({ status }) => {
   return (
     <span
       className={cn(
-        "inline-flex w-20 items-center justify-center rounded-full border px-2 py-1 text-xs font-medium",
+        "inline-flex w-20 items-center justify-center rounded-full border px-2 py-1 text-xl font-medium",
         getStatusColor(status)
       )}
     >

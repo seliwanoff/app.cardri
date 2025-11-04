@@ -162,7 +162,7 @@ const SignupForm = ({ setUserData }: PasswordProps) => {
   return (
     <div className="w-full max-w-[522px] flex flex-col lg:gap-[42px]  gap-8  justify-center items-center  mb-28 lg:pt-32 pt-6 ">
       <div className="w-full">
-        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl  lg:text-4xl text-left font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-2xl  lg:text-4xl text-left font-sora font-bold  leading-[48px]">
           Set up your account
         </h1>
         <span className="text-xl font-normal font-inter text-left  text-[#464646]  mt-4 inline-block">

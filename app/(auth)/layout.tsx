@@ -79,7 +79,7 @@ function LayoutContent({ children }: { children: React.ReactNode }) {
         {/* Right section */}
         <div className="flex-1 lg:ml-[553px] bg-[#F5F2FB] h-full lg:p-0 p-4">
           {" "}
-          <div className="flex lg:hidden  h-[110px] py-6   items-center w-full justify-start">
+          <div className="flex lg:hidden  h-[100px] py-6 px-3  items-center w-full justify-start">
             <Image src={Cardri} alt="logo" />
           </div>
           {children}

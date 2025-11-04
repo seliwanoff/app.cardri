@@ -13,15 +13,13 @@ const AccountVerification = ({ datas }: AccountVerificationProps) => {
   const router = useRouter();
   const action = () => {
     router.push(
-      `/account-verification-onboarding?step=1&email=${
-        datas?.email || "olagunjuseim2019@gmail.com"
-      }`
+      `/account-verification-onboarding?step=1&email=${datas?.email}`
     );
   };
   return (
     <div className="flex flex-col gap-16 items-center justify-center w-full  max-w-[496px] lg:mt-0 mt-10">
       <div className="w-full text-center">
-        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-3xl text-center lg:text-4xl  font-sora font-bold  leading-[48px]">
+        <h1 className="text-secondary-500 md:text-3xl sm:text-2xl text-2xl text-center lg:text-4xl  font-sora font-bold  leading-[48px]">
           Verify your identity
         </h1>
         <span className="text-[14px] font-normal font-inter text-center  text-[#464646] leading-[28px] mt-4 inline-block">
