@@ -1,5 +1,5 @@
-import { create } from "zustand";
-import { persist, createJSONStorage } from "zustand/middleware";
+import { create } from 'zustand';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface UserData {
   id: number;
@@ -10,6 +10,15 @@ interface UserData {
   email_verified_at: string;
   pin_status: boolean;
   profile_photo_url?: string;
+  lastName: string;
+  firstName: string;
+  username: string;
+  tier: string;
+  bank: string;
+  bankCode: string;
+  accountNumber2Status?: any;
+  accountNumber2Id?: string;
+  accountNumber2?: string;
 }
 
 interface UserStore {
@@ -79,7 +88,7 @@ export const useBeneficiaryStore = create<BeneficiaryState>()(
       clearBeneficiaries: () => set({ beneficiaries: [] }),
     }),
     {
-      name: "beneficiary-storage",
+      name: 'beneficiary-storage',
       storage: createJSONStorage(() => sessionStorage),
     }
   )
