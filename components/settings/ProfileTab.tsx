@@ -14,7 +14,7 @@ import ProfileForm from './tabs/profileForm';
 
 export default function ProfileTab() {
   const searchParams = useSearchParams();
-  const currentTab = searchParams.get('tab');
+  const currentTab = searchParams.get('sub');
 
   const renderTabContent = useMemo(() => {
     switch (currentTab) {
@@ -34,7 +34,7 @@ export default function ProfileTab() {
   }, [currentTab]);
 
   return (
-    <div className='flex flex-col gap-10'>
+    <div className='flex flex-col gap-10 bg-white px-6 pt-6 rounded-2xl'>
       {/* Top Profile Card */}
       {!currentTab && <UserProfileHeader />}
 

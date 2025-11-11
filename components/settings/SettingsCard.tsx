@@ -21,7 +21,7 @@ export const SettingsCard = ({
 
     // Preserve other existing params (if any)
     const params = new URLSearchParams(searchParams);
-    params.set('tab', tabParam);
+    params.set('sub', tabParam);
 
     router.push(`${pathname}?${params.toString()}`);
   };

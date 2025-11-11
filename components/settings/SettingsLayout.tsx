@@ -21,8 +21,20 @@ export default function SettingsLayout({
   return (
     <div className='w-full min-h-screen mt-4'>
       {/* Top Tabs */}
-      <div className='w-full bg-white rounded-xl'>
-        <div className='max-w-5xl mx-auto flex items-center gap-8 p-4 overflow-x-auto w-full'>
+      <div
+        className='w-full bg-white rounded-xl'
+        style={{
+          msOverflowStyle: 'none',
+          scrollbarWidth: 'none',
+        }}
+      >
+        <div
+          className='max-w-5xl mx-auto flex items-center gap-8 p-4 overflow-x-auto w-full'
+          style={{
+            msOverflowStyle: 'none',
+            scrollbarWidth: 'none',
+          }}
+        >
           {tabs.map((tab) => (
             <button
               key={tab}
@@ -41,9 +53,7 @@ export default function SettingsLayout({
       </div>
 
       {/* Content */}
-      <div className='mx-auto px-6 pt-6 mt-4 bg-white pb-10 rounded-2xl'>
-        {children}
-      </div>
+      <div className='mx-auto  pt-6 mt-4 pb-10 rounded-2xl'>{children}</div>
     </div>
   );
 }
